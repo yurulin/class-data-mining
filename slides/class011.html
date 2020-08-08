@@ -1,0 +1,626 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 01</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 01">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 01</h1>
+	</header>
+  <section class="slide code" id="toc">
+  <div>
+    <h2>Install R packages</h2>
+    <p>R has a lot of powerful packages. You need to load a package into memory before using it.</p>
+
+<pre><code class="r">library(ggplot2) ## a package for plotting
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-2">
+  <div>
+    <h2>Install R packages</h2>
+    <p>If you see an error message:</p>
+
+<pre><code>there is no package called &#39;ggplot2&#39;
+</code></pre>
+
+<p>it means you don&#39;t have this package and you need to install it.</p>
+
+<ul>
+<li>Using GUI</li>
+<li>Using command</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-3">
+  <div>
+    <h2>Install R packages (using command)</h2>
+    <pre><code class="r">## install directly from the default repository http://cran.r-project.org/
+install.packages(&#39;ggplot2&#39;) 
+## or install a bunch of them
+install.packages(c(&#39;ggplot2&#39;,&#39;tidyverse&#39;,&#39;dplyr&#39;)) 
+</code></pre>
+
+<p>Or you can download from the source:</p>
+
+<pre><code class="r">## option 1: download the package source, and then install from the downloaded file 
+download.file(&#39;http://cran.r-project.org/src/contrib/ggplot2_0.9.3.1.tar.gz&#39;,
+             destfile=&#39;~/Downloads/ggplot2_0.9.3.1.tar.gz&#39;)
+install.packages(&#39;~/Downloads/ggplot2_0.9.3.1.tar.gz&#39;,repo=NULL,type=&#39;source&#39;)
+## option 2: install from a source URL
+install.packages(&#39;http://cran.r-project.org/src/contrib/ggplot2_0.9.3.1.tar.gz&#39;,repo=NULL, type=&quot;source&quot;)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-4">
+  <div>
+    <h2>Getting help</h2>
+    <pre><code class="r">?read.delim # Access a function&#39;s help file
+
+??base::delim # Search for &#39;delim&#39; in all help files for functions in &#39;base&#39;
+
+help.search(&quot;delim&quot;) # Search for &#39;delimited&#39; in all help files
+
+RSiteSearch(&quot;parsing text&quot;) # Search for the term &#39;parsing text&#39; on the R site
+</code></pre>
+
+<p>More on <a href="index.html?full#r-refs">R Resources</a>!</p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="working-with-data">
+  <div>
+    <h2>Working with data</h2>
+      
+<div class='left' style='float:left;width:30%'>
+<p><img src="assets/fig/01/data_frame.png" alt="pic"></p>
+
+</div>    
+<div class='right' style='float:right;width:68%'>
+  <pre><code class="r">## give the filename of your data; the file can be an URL
+data.file = &#39;http://www.yurulin.com/class/spring2014_datamining/data/ml_hackers/01_heights_weights_genders.csv&#39;
+mydata = read.csv(data.file , header = TRUE , sep = &#39;,&#39;)
+
+## you can view the data (if it&#39;s not too large to put into memory)
+# View(mydata)
+
+head(mydata) ## or just see the first few rows
+</code></pre>
+
+<pre><code>##   Gender   Height   Weight
+## 1   Male 73.84702 241.8936
+## 2   Male 68.78190 162.3105
+## 3   Male 74.11011 212.7409
+## 4   Male 71.73098 220.0425
+## 5   Male 69.88180 206.3498
+## 6   Male 67.25302 152.2122
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-6">
+  <div>
+    <h2>Working with data</h2>
+    <pre><code class="r">class(mydata)
+</code></pre>
+
+<pre><code>## [1] &quot;data.frame&quot;
+</code></pre>
+
+<pre><code class="r">dim(mydata) # show the dimension of the data
+</code></pre>
+
+<pre><code>## [1] 10000     3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-7">
+  <div>
+    <h2>Working with data: summary</h2>
+    <pre><code class="r">## R summary function
+# ?summary
+summary(mydata)
+</code></pre>
+
+<pre><code>##     Gender         Height          Weight     
+##  Female:5000   Min.   :54.26   Min.   : 64.7  
+##  Male  :5000   1st Qu.:63.51   1st Qu.:135.8  
+##                Median :66.32   Median :161.2  
+##                Mean   :66.37   Mean   :161.4  
+##                3rd Qu.:69.17   3rd Qu.:187.2  
+##                Max.   :79.00   Max.   :270.0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-8">
+  <div>
+    <h2>Working with data: summary</h2>
+    <pre><code class="r">summary(mydata$Height) # summary for the &#39;Height&#39; column  
+</code></pre>
+
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   54.26   63.51   66.32   66.37   69.17   79.00
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-9">
+  <div>
+    <h2>Working with data</h2>
+    <pre><code class="r">## Means, Medians, Modes
+heights = mydata$Height ## extract the &#39;Height&#39; column 
+mean(heights)
+</code></pre>
+
+<pre><code>## [1] 66.36756
+</code></pre>
+
+<pre><code class="r">median(heights)
+</code></pre>
+
+<pre><code>## [1] 66.31807
+</code></pre>
+
+<pre><code class="r">min(heights); max(heights)
+</code></pre>
+
+<pre><code>## [1] 54.26313
+</code></pre>
+
+<pre><code>## [1] 78.99874
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-10">
+  <div>
+    <h2>Working with data: Quantile</h2>
+    <pre><code class="r">quantile(heights)
+</code></pre>
+
+<pre><code>##       0%      25%      50%      75%     100% 
+## 54.26313 63.50562 66.31807 69.17426 78.99874
+</code></pre>
+
+<pre><code class="r">quantile(heights, prob = 0.25)
+</code></pre>
+
+<pre><code>##      25% 
+## 63.50562
+</code></pre>
+
+<pre><code class="r">quantile(heights, probs = seq(0, 1, by = 0.20))
+</code></pre>
+
+<pre><code>##       0%      20%      40%      60%      80%     100% 
+## 54.26313 62.85901 65.19422 67.43537 69.81162 78.99874
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-11">
+  <div>
+    <h2>Working with data</h2>
+    <pre><code class="r">## Standard Deviations and Variances
+sd(heights)
+</code></pre>
+
+<pre><code>## [1] 3.847528
+</code></pre>
+
+<pre><code class="r">var(heights)
+</code></pre>
+
+<pre><code>## [1] 14.80347
+</code></pre>
+
+<pre><code class="r">## Tabulation
+table(mydata$Gender)
+</code></pre>
+
+<pre><code>## 
+## Female   Male 
+##   5000   5000
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-12">
+  <div>
+    <h2>Working with data</h2>
+    <pre><code class="r">## Correlation 
+weights = mydata$Weight
+cor(heights,weights)
+</code></pre>
+
+<pre><code>## [1] 0.9247563
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-13">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">## Histogram and Density
+library(&#39;ggplot2&#39;) 
+theme_set(theme_bw()) # change the default ggplot theme to black-and-white
+
+ggplot(mydata, aes(x = Height)) +
+  geom_histogram(binwidth=1) 
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-12-1.png" title="plot of chunk class011-chunk-12" alt="plot of chunk class011-chunk-12" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-14">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Height)) +
+  geom_histogram(binwidth=0.5) # try different value for bandwidth 
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-13-1.png" title="plot of chunk class011-chunk-13" alt="plot of chunk class011-chunk-13" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-15">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Height)) +
+  geom_density()
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-14-1.png" title="plot of chunk class011-chunk-14" alt="plot of chunk class011-chunk-14" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-16">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">## conditional density plot
+ggplot(mydata, aes(x = Weight, fill = Gender)) +
+  geom_density(alpha = 0.5) 
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-15-1.png" title="plot of chunk class011-chunk-15" alt="plot of chunk class011-chunk-15" width="360" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-17">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Weight)) +
+  geom_density(alpha = 0.5) + facet_grid(Gender ~ .) 
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-16-1.png" title="plot of chunk class011-chunk-16" alt="plot of chunk class011-chunk-16" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-18">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Weight, fill = Gender)) +
+  geom_density(alpha = 0.5) + facet_grid(Gender ~ .)  
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-17-1.png" title="plot of chunk class011-chunk-17" alt="plot of chunk class011-chunk-17" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-19">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">## Scatterplot
+ggplot(mydata, aes(x = Weight, y = Height)) + geom_point()
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-18-1.png" title="plot of chunk class011-chunk-18" alt="plot of chunk class011-chunk-18" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-20">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Weight, y = Height, color = Gender)) + geom_point(alpha = 0.5)
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-19-1.png" title="plot of chunk class011-chunk-19" alt="plot of chunk class011-chunk-19" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-21">
+  <div>
+    <h2>Plotting</h2>
+    <pre><code class="r">ggplot(mydata, aes(x = Weight, y = Height)) + geom_point(shape=1, alpha = 0.5) + # use hollow circles 
+  geom_smooth(method=lm, # add linear regression line
+              se=FALSE) # (by default includes 95% confidence region)  
+</code></pre>
+
+<p><img src="assets/fig/class011-chunk-20-1.png" title="plot of chunk class011-chunk-20" alt="plot of chunk class011-chunk-20" width="288" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-22">
+  <div>
+    <h2>More about plotting</h2>
+    <p>See: </p>
+
+<ul>
+<li><a href="http://www.cookbook-r.com/Graphs/">http://www.cookbook-r.com/Graphs/</a> from <a href="http://www.cookbook-r.com/">Cookbook for R</a>, by Winston Chang</li>
+<li><a href="rlab02.html">R Lab: Part II</a></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class01.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>
