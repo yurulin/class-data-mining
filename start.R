@@ -47,6 +47,46 @@ if (1) {
 ## Step 3: Generate Deck
 if (0) {
   slidify("test.Rmd")
+  
+  if (1) {
+    setwd("~/connect/yurulin/class-data-mining/slides")
+    library(slidify)
+    library(knitr)
+    .unnamed.chunk.label = 'class00-chunk'
+    opts_knit$set(unnamed.chunk.label=.unnamed.chunk.label)
+    opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, autodep = TRUE, dpi = 150)
+    
+    opts_knit$set(unnamed.chunk.label='class00-chunk')
+    opts_chunk$set(
+      echo=TRUE,
+      cache=F,
+      message=FALSE,
+      warning=FALSE,
+      autodep = T,
+      fig.width = 4, fig.height = 4,
+      fig.retina=2,
+      dpi=72,
+      cache.rebuild=T
+    )
+  }  
+  opts_knit$set(unnamed.chunk.label='class00-chunk')
+  slidify("slide_index.Rmd")
+  opts_knit$set(unnamed.chunk.label='rlab01-chunk')
+  slidify("rlab01.Rmd")
+  opts_knit$set(unnamed.chunk.label='rlab02-chunk')
+  slidify("rlab02.Rmd")
+  
+  if (1) { ## class01
+    opts_knit$set(unnamed.chunk.label='class01-chunk')
+    slidify("class01.Rmd")
+    opts_knit$set(unnamed.chunk.label='class011-chunk')
+    slidify("class011.Rmd")
+    opts_knit$set(unnamed.chunk.label='class012-chunk')
+    slidify("class012.Rmd")
+    opts_knit$set(unnamed.chunk.label='hw-howto-chunk')
+    slidify("hw-howto.Rmd")
+  }
+  
 }
 
 ## Step 4: Publish Deck
