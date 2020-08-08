@@ -1,0 +1,251 @@
+.bottomright {
+  position: absolute;
+  bottom: -4px; /* -4px a trick to make the underline invisible */
+  right: 0;
+  text-decoration: none;
+}
+
+
+.foot a, .foot img {
+  position: relative;
+  float: right;
+  margin-bottom: 0;
+  padding-right: 2px;
+  padding-bottom: 6px;
+  z-index: 20;
+  text-decoration: none;
+}
+.foot1 a, .foot1 img {
+  position: relative;
+  float: left;
+  margin-bottom: 0;
+  padding-left: 2px;
+  padding-bottom: 6px;
+  z-index: 20;
+  text-decoration: none;
+}
+
+.bottomleft {
+  position: absolute;
+  bottom: -4px; /* -4px a trick to make the underline invisible */
+  left: 0;
+  text-decoration: none;
+}
+
+
+
+.deck-foot a, .deck-foot img{
+  position: relative;
+  float: right;
+  margin-top: 300px;
+  /*margin-right: 2px;*/
+  padding-right: 2px;
+  z-index: 10;
+  text-decoration: none;
+}
+
+.slide p, .slide li, .slide ol, .slide ul, .slide ul ul {
+  font-size: 100%;
+  line-height: 1.2em;
+
+  /* smaller margin */
+    margin-top: 1px ;
+    margin-bottom: 1px ;
+    padding-top: 1px ;
+    padding-bottom: 1px ;	
+}
+
+.compact p, .compact li, .compact ol, .compact ul {
+  font-size: 90%;
+  line-height: 1.1em;
+
+  /* line wrapping */
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+
+  /* smaller margin */
+    margin-top: 1px ;
+    margin-bottom: 1px ;
+    padding-top: 1px ;
+    padding-bottom: 1px ;	
+}
+
+.cc ul, .cc li, .cc ol, .cc p, .cc li ul, .cc ul ul, .cc tr {
+  font-size: 100%;
+  line-height: 90%;
+
+  /* line wrapping */
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+
+  /* smaller margin */
+    margin-top: -1em ;
+    margin-bottom: -.4em ;
+    padding-top: 4px ;
+    padding-bottom: 4px ;	
+}
+
+.cc td {
+  font-size: 100%;
+  line-height: 80%;
+
+  /* line wrapping */
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+
+  /* smaller margin */
+    margin-top: 0px ;
+    margin-bottom: 0px ;
+    padding-top: 0px ;
+    padding-bottom: 0px ;	
+}
+.compact-nowrap p, li, ol {
+  font-size: 90%;
+  line-height: 1.1em;
+
+  /* smaller margin */
+    margin-top: 2px ;
+    margin-bottom: 2px ;
+    padding-top: 2px ;
+    padding-bottom: 2px ;	
+}
+
+
+/* Smaller code fonts in modal popup */
+  .code pre code {
+    font-size: 70%;
+    line-height: 1.1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+  
+    
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+  }
+
+  .scode pre code {
+    font-size: 60%;
+    line-height: 1.1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+    
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+  }  
+  
+  .scode-nowrap pre code {
+    font-size: 60%;
+    line-height: 1.1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+  }    
+  
+  .sscode pre code {
+    font-size: 50%;
+    line-height: 1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+    
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+    }   
+
+  .sscode-nowrap pre code {
+    font-size: 50%;
+    line-height: 1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+    
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+  }    
+  
+  .ssscode pre code {
+    font-size: 40%;
+    line-height: 1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+    
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */	
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+  }     
+  
+  .ssscode-nowrap pre code {
+    font-size: 40%;
+    line-height: 1em;	
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border-width: 0px;
+  background-color: #efefef;
+  font-family: 'Inconsolata', 'Courier New', monospace;
+    
+    margin: 2px ;
+    margin-bottom: -30px ;
+    padding: 2px ;
+    }       
