@@ -1,0 +1,619 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 02</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 02">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 02</h1>
+	</header>
+  <section class="slide code" id="toc">
+  <div>
+    <h2>On distributions</h2>
+    <ul>
+<li><a href="#normal">Normal distribution</a></li>
+<li><a href="#normality">Normality test</a></li>
+<li><a href="#prob-r">Probability distributions in R</a></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="normal">
+  <div>
+    <h2>Normal distribution (Gaussian distribution)</h2>
+    <p>probability density function (pdf)
+\[ f(x) = \frac{1}{\sigma \sqrt{2\pi} }e^{ -\frac{(x - \mu)^2}{ 2 \sigma^2} } \]</p>
+
+<p>with mean \(\mu\) and standard deviation \(\sigma\)</p>
+
+<p><img src="assets/fig/02/Normal_Distribution_PDF.png" width='48%' />
+<img src="assets/fig/02/Empirical_Rule.PNG" width='45%' /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-3">
+  <div>
+    <h2>Normal distribution</h2>
+    <ul>
+<li>a type of <em>bell curve</em></li>
+<li>two parameters
+
+<ul>
+<li><em>mean</em>: determines the center of the bell curve</li>
+<li><em>variance</em> (and <em>standard deviation</em> \(\sigma\)): determines the width of the bell curve</li>
+</ul></li>
+</ul>
+
+<p><img src="assets/fig/02/Normal_Distribution_PDF.png" width='48%' /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-4">
+  <div>
+    <h2>Normal distribution</h2>
+      
+<div class='left' style='float:left;width:58%'>
+<ul>
+<li>It is generally observed that the distribution of data is <em>normal</em>. 
+
+<ul>
+<li>When plotting a graph with the value of the variable on the x-axis and the count of the values on the y-axis, we get a <em>bell shape</em> curve. </li>
+<li>The center of the curve represents the <em>mean</em> of the data set. </li>
+<li>Half of values lie to the left of the mean and the other half lie to the right of the graph. </li>
+</ul></li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:40%'>
+  <p><img src="assets/fig/02/Empirical_Rule.PNG" width='100%' /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-5">
+  <div>
+    <h2>Normal distribution</h2>
+      
+<div class='left' style='float:left;width:58%'>
+<p>Empirical rule</p>
+
+<ul>
+<li>The probability that a variable will be within +1 or -1 standard deviation of the mean is 0.68 -- i.e., 68% of the values will be within 1 standard deviation (SD) of the mean. The probability that the variable will be on average within 2 and 3 SDs will be 0.95 and 0.997, respectively.</li>
+<li>Given that 99.7% of the values will fall within 3 standard deviations, we&#39;re confidence that value beyond 3 will be highly unlikely. </li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:40%'>
+  <p><img src="assets/fig/02/Empirical_Rule.PNG" width='100%' /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-6">
+  <div>
+    <h2>Modes (peaks)</h2>
+    <ul>
+<li>the mode of the data is the peak of the bell</li>
+<li><em>unimodal</em>: a distribution with one mode</li>
+<li><em>bimodal</em>: a distribution with two modes</li>
+<li><em>multimodal</em>: a distribution with two or more modes</li>
+</ul>
+
+<p><img src="assets/fig/02/distr_modes.png" width='100%' /></p>
+
+<!--
+<img src="assets/fig/02/norm_unimodal.png" width='30%' />
+<img src="assets/fig/02/norm_bimodal.png" width='30%' />
+<img src="assets/fig/02/norm_multi.png" width='30%' />
+-->
+
+<!--
+<figure>
+  <img src="assets/fig/02/norm_unimodal.png" width='20%' />
+  <figcaption>unimodal</figcaption>
+</figure>
+-->
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-7">
+  <div>
+    <h2>symmetric v. skewed</h2>
+    <p><img src="assets/fig/02/distr_symm_skew.png" width='70%' /></p>
+
+<p>skewed to the right -- more likely to see extreme values to the right of the mode</p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-8">
+  <div>
+    <h2>Power law (highly skewed)</h2>
+    <p><img src="assets/fig/02/distr_power_law.png" width='100%' /></p>
+
+<ul>
+<li>a straight-line on the log-log plot: often the signature of a power law
+
+<ul>
+<li>However, the straight-line is a necessary but <em>not sufficient</em> condition to say if the data follow a power law </li>
+<li>(Optional) further reading: <a href="https://www.hpl.hp.com/research/idl/papers/ranking/ranking.html">Zipf, Power-laws, and Pareto - a ranking tutorial</a></li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-9">
+  <div>
+    <h2>thin-tailed v. heavy-tailed</h2>
+    <p><img src="assets/fig/class021-chunk-1-1.png" title="plot of chunk class021-chunk-1" alt="plot of chunk class021-chunk-1" width="432" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="normality">
+  <div>
+    <h2>Normality Test in R</h2>
+      
+<div class='left' style='float:left;width:75%'>
+<ul>
+<li>Many of statistical methods including correlation, regression, t-test, and analysis of variance (ANOVA) assume that the data follows a <em>normal</em> (Gaussian) distribution. These tests are called <strong>parametric tests</strong>, because their validity depends on the distribution of the data.</li>
+<li>Normality and the other assumptions made by these tests should be taken seriously to draw reliable interpretation of the analysis.</li>
+<li>Before using a parametric test, make sure that the test assumptions are met. If the assumptions are violated, <strong>non-paramatric</strong> tests should be used.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:24%'>
+  <p><img src="assets/fig/class021-chunk-2-1.png" title="plot of chunk class021-chunk-2" alt="plot of chunk class021-chunk-2" width="288" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-11">
+  <div>
+    <h2>Visual method for normality</h2>
+      
+<div class='left' style='float:left;width:49%'>
+<pre><code class="r">## Plot using a qqplot
+qqnorm(normal.values, main=&quot;QQ plot of normal data&quot;,pch=1);qqline(normal.values, col = 2)
+</code></pre>
+
+<p><img src="assets/fig/class021-chunk-3-1.png" title="plot of chunk class021-chunk-3" alt="plot of chunk class021-chunk-3" width="288" /></p>
+
+</div>    
+<div class='right' style='float:right;width:48%'>
+  <pre><code class="r">## Plot using a qqplot
+qqnorm(gamma.values, main=&quot;QQ plot of skewed data&quot;,pch=1);qqline(gamma.values, col = 2)
+</code></pre>
+
+<p><img src="assets/fig/class021-chunk-4-1.png" title="plot of chunk class021-chunk-4" alt="plot of chunk class021-chunk-4" width="288" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-12">
+  <div>
+    <h2>Hypothesis test for normality</h2>
+    <p><em>Null hypothesis</em>: The data is normally distributed. If p&gt;0.05, normality can be assumed.</p>
+
+<pre><code class="r">## Plot using a qqplot
+shapiro.test(normal.values)
+</code></pre>
+
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  normal.values
+## W = 0.99876, p-value = 0.7256
+</code></pre>
+
+<pre><code class="r">shapiro.test(gamma.values)
+</code></pre>
+
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  gamma.values
+## W = 0.8376, p-value &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-13">
+  <div>
+    <h2>Normality test</h2>
+    <ul>
+<li>Visual methods, e.g., density plot and Q-Q plot can be used to inspect normality visually.
+
+<ul>
+<li>Q-Q plot (or quantile-quantile plot) draws the correlation between a given sample and the theoretical (normal) distribution. A 45-degree reference line is also plotted in order to see whether the data deviates from normality.</li>
+</ul></li>
+<li>There are several methods for normality test, e.g., Kolmogorov-Smirnov (K-S) normality test and Shapiro-Wilk&#39;s test (<code>shapiro.test()</code>).
+
+<ul>
+<li>The null hypothesis is that <em>sample distribution is normal</em>. If the test is significant, the distribution is non-normal.</li>
+<li>Shapiro-Wilk&#39;s method is more robust and is widely recommended.</li>
+<li>Both tests are sensitive to outliers and are influenced by sample size. Small samples most often pass normality tests. </li>
+<li>Better to combine visual inspection and significance test.</li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-14">
+  <div>
+    <h2>Normality test</h2>
+    <p>What if the data is not normally distributed? </p>
+
+<ul>
+<li>Some options
+
+<ul>
+<li>Transform the variable (repeating the normality checks on the transformed data): Common transformations include taking the log or square root of the variable</li>
+<li>Use a non-parametric test: Non-parametric tests are often called distribution free tests and can be used instead of their parametric counterpart</li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="prob-r">
+  <div>
+    <h2>Simulating normal distribution</h2>
+      
+<div class='left' style='float:left;width:58%'>
+<p>probability density function (pdf)
+\[ f(x) = \frac{1}{\sigma \sqrt{2\pi} }e^{ -\frac{(x - \mu)^2}{ 2 \sigma^2} } \]</p>
+
+<p>with mean \(\mu\) and standard deviation \(\sigma\)</p>
+
+</div>    
+<div class='right' style='float:right;width:40%'>
+  <p><img src="assets/fig/class021-chunk-6-1.png" title="plot of chunk class021-chunk-6" alt="plot of chunk class021-chunk-6" width="288" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-16">
+  <div>
+    <h2>Simulating normal distribution</h2>
+      
+<div class='left' style='float:left;width:58%'>
+<p>with mean \(\mu\) and standard deviation \(\sigma\)</p>
+
+<pre><code class="r">m=0; s=1
+c1=data.frame(X = rnorm(100000, m, s), distribution=&#39;m=0; s=1&#39;)
+m=0; s=0.2
+c2=data.frame(X = rnorm(100000, m, s), distribution=&#39;m=0; s=0.2&#39;)
+m=0; s=5
+c3=data.frame(X = rnorm(100000, m, s), distribution=&#39;m=0; s=5&#39;)
+m=-2; s=0.5
+c4=data.frame(X = rnorm(100000, m, s), distribution=&#39;m=-2; s=0.5&#39;)
+
+df = rbind(c1,c2,c3,c4)
+ggplot(df, aes(x=X, color=distribution)) + 
+  geom_density() + 
+  scale_x_continuous(limits = c(-6, 6)) +
+  theme(legend.position=c(.98,.98), 
+  legend.justification = c(&quot;right&quot;,&quot;top&quot;))
+</code></pre>
+
+</div>    
+<div class='right' style='float:right;width:40%'>
+  <p><img src="assets/fig/class021-chunk-8-1.png" title="plot of chunk class021-chunk-8" alt="plot of chunk class021-chunk-8" width="288" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-17">
+  <div>
+    <h2>Probability distributions in R</h2>
+    <!--
+[](https://daviddalpiaz.github.io/appliedstats/probability-and-statistics-in-r.html)
+[](http://zoonek2.free.fr/UNIX/48_R/07.html)
+-->
+
+<p>Useful R functions:</p>
+
+<ul>
+<li><code>dname</code> calculates density (pdf) at input x.</li>
+<li><code>pname</code> calculates distribution (cdf) at input x.</li>
+<li><code>qname</code> calculates the quantile at an input probability.</li>
+<li><code>rname</code> generates a random draw from a particular distribution.</li>
+</ul>
+
+<p>Note that <code>name</code> is the name of the given distribution.</p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-18">
+  <div>
+    <h2>Probability distributions in R</h2>
+    <pre><code class="r">## To calculate the value of the pdf at x = 3, i.e., the height of the curve at x = 3
+dnorm(x = 3, mean = 2, sd = 5)
+</code></pre>
+
+<pre><code>## [1] 0.07820854
+</code></pre>
+
+<pre><code class="r">## To calculate the value of the cdf at x = 3, i.e.,  P(X&lt;=3)
+pnorm(q = 3, mean = 2, sd = 5)
+</code></pre>
+
+<pre><code>## [1] 0.5792597
+</code></pre>
+
+<pre><code class="r">## To calculate the quantile for probability 0.975
+qnorm(p = 0.975, mean = 2, sd = 5)
+</code></pre>
+
+<pre><code>## [1] 11.79982
+</code></pre>
+
+<pre><code class="r">## To generate a random sample of size n = 10
+rnorm(n = 10, mean = 2, sd = 5)
+</code></pre>
+
+<pre><code>##  [1]  3.108827301 -5.288194015 -1.037812836 -0.187395023 -0.003518091  6.600111266 -0.827140115 -6.619167231  3.295839653 -0.812852598
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-19">
+  <div>
+    <h2>Probability distributions in R</h2>
+    <!-- * [Basic Probability Distributions](https://www.cyclismo.org/tutorial/R/probability.html) -->
+
+<p><strong>Exercise</strong></p>
+
+<ul>
+<li><a href="https://bookdown.org/rdpeng/rprogdatascience/simulation.html">Simulation</a> (<img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/YouTube_play_buttom_icon_%282013-2017%29.svg/200px-YouTube_play_buttom_icon_%282013-2017%29.svg.png" width="20px" /> video available)</li>
+<li><a href="https://daviddalpiaz.github.io/appliedstats/probability-and-statistics-in-r.html">Probability and Statistics in R</a></li>
+</ul>
+
+<p><strong>Learning check</strong></p>
+
+<ul>
+<li>How do you generate a random set of values that follow a <em>Normal</em>, <em>Binomial</em>, <em>Poisson</em>, or <em>Chi-Squared</em> distribution?</li>
+<li>What is a two-sample t-test? How do you perform one- and two-sample t-tests in R?</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class02.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide " id="ref">
+  <div>
+    <h2>References</h2>
+    <ul>
+<li><a href="https://daviddalpiaz.github.io/appliedstats/">Applied Statistics with R</a></li>
+<li><a href="https://www.sheffield.ac.uk/polopoly_fs/1.579191!/file/stcp-karadimitriou-normalR.pdf">Checking normality for parametric tests in R</a></li>
+<li><a href="https://www.hpl.hp.com/research/idl/papers/ranking/ranking.html">Zipf, Power-laws, and Pareto - a ranking tutorial</a></li>
+</ul>
+
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>

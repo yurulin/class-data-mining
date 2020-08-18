@@ -6,6 +6,10 @@
 # Step 0 & 1 are initilaization of the deck; no need to repeat
 # After intializing mydeck, run Step 2+ and modify unnamed.chunk.label
 
+if (0) {
+  ## previous version
+  setwd("~/connect/picsogit/2020-DM-modules/mydeck-DM-slides")
+}
 ## Step 0: Install Slidify
 if (0) {
   library(devtools)
@@ -85,6 +89,17 @@ if (0) {
     slidify("class012.Rmd")
     opts_knit$set(unnamed.chunk.label='hw-howto-chunk')
     slidify("hw-howto.Rmd")
+  }
+  if (1) { ## class02
+    opts_knit$set(unnamed.chunk.label='class02-chunk')
+    slidify("class02.Rmd")
+    opts_knit$set(unnamed.chunk.label='rlab01-chunk')
+    slidify("rlab01.Rmd")
+    opts_knit$set(unnamed.chunk.label='rlab02-chunk')
+    slidify("rlab02.Rmd")
+    
+    opts_knit$set(unnamed.chunk.label='class021-chunk')
+    slidify("class021.Rmd")
   }
   
 }
