@@ -93,13 +93,14 @@ if (0) {
   if (1) { ## class02
     opts_knit$set(unnamed.chunk.label='class02-chunk')
     slidify("class02.Rmd")
-    opts_knit$set(unnamed.chunk.label='rlab01-chunk')
-    slidify("rlab01.Rmd")
-    opts_knit$set(unnamed.chunk.label='rlab02-chunk')
-    slidify("rlab02.Rmd")
     
     opts_knit$set(unnamed.chunk.label='class021-chunk')
     slidify("class021.Rmd")
+    opts_knit$set(unnamed.chunk.label='class022-chunk')
+    slidify("class022.Rmd")
+    opts_knit$set(unnamed.chunk.label='class023-chunk')
+    slidify("class023.Rmd")
+    
   }
   
 }
