@@ -3,7 +3,7 @@
 # @date: 2020-07-24
 
 
-setwd("~/connect/picsogit/2020-DM-modules/mydeck-DM-slides")
+setwd("~/connect/yurulin/class-data-mining/slides")
 library(knitr)
 
 opts_chunk$set(
@@ -19,7 +19,7 @@ opts_chunk$set(
   fig.cap=NULL,
   fig.width = 4, fig.height = 4,
   fig.retina=2,
-  dpi=72
+  dpi=84
 )
 # dep_auto()
 
@@ -34,6 +34,7 @@ modname = "index" ## default class module
 .mod <- function() {sprintf("--- &module modname:%s  .code", modname)}
 .mods <- function() {sprintf("--- &module modname:%s  .scode", modname)}
 .modss <- function() {sprintf("--- &module modname:%s  .sscode", modname)}
+.modsss <- function() {sprintf("--- &module modname:%s  .ssscode", modname)}
 ## use `r .mod2(30,68)` to print the following inline code (two-column slide; add slide index #xxx manually)
 # --- &twocolvar w1:30% w2:68% modname:class01 .code #working-with-data 
 .mod2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .code", modname,w1,w2)}

@@ -1,0 +1,2417 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 03</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 03">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 03</h1>
+	</header>
+  <section class="slide " id="toc">
+  <div>
+    <h2>Class 03</h2>
+    <ul>
+<li><a href="#set-up">Set up</a></li>
+<li><a href="#simple-regression">Simple Regression</a></li>
+<li><a href="#multiple-linear-regression">Multiple linear regression</a></li>
+<li><a href="#variable-selection">Variable selection</a></li>
+<li><a href="#model-performance">Model performance</a></li>
+<li><a href="#polynomial-regression">Polynomial regression</a></li>
+<li><a href="#non-linear">Non-linear Data</a></li>
+<li><a href="#cross-validation">Cross-validation</a></li>
+<li><a href="#regularization">Regularization</a></li>
+<li><a href="#local-poly">Local Polynomial Regression</a></li>
+<li><a href="#lasso">LASSO</a></li>
+</ul>
+
+  </div>
+</section>
+<section class="slide code" id="set-up">
+  <div>
+    <h2>Install R packages</h2>
+    <pre><code class="r">## this tutorial uses the following packages
+install.packages(&#39;nutshell&#39;) 
+install.packages(&#39;glmnet&#39;)
+install.packages(&#39;locfit&#39;)
+install.packages(&#39;lars&#39;)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="simple-regression">
+  <div>
+    <h2>Simple Regression</h2>
+    <p>The examples are taken from <a href="http://www.manning.com/kabacoff/">R in Action</a>
+\[\hat{y}=\alpha +\beta x\]</p>
+
+<pre><code class="r">## we&#39;ll use an exmaple dataset &#39;women&#39; in the &#39;car&#39; package
+library(car) ## load the package
+women
+</code></pre>
+
+<pre><code>##    height weight
+## 1      58    115
+## 2      59    117
+## 3      60    120
+## 4      61    123
+## 5      62    126
+## 6      63    129
+## 7      64    132
+## 8      65    135
+## 9      66    139
+## 10     67    142
+## 11     68    146
+## 12     69    150
+## 13     70    154
+## 14     71    159
+## 15     72    164
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-4">
+  <div>
+    <h2>Simple Regression</h2>
+    <pre><code class="r">## data summary
+summary(women)
+</code></pre>
+
+<pre><code>##      height         weight     
+##  Min.   :58.0   Min.   :115.0  
+##  1st Qu.:61.5   1st Qu.:124.5  
+##  Median :65.0   Median :135.0  
+##  Mean   :65.0   Mean   :136.7  
+##  3rd Qu.:68.5   3rd Qu.:148.0  
+##  Max.   :72.0   Max.   :164.0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code compact" id="slide-5">
+  <div>
+    <h2>Simple Regression</h2>
+    <pre><code class="r">## plot the data
+plot(women$height, women$weight)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-4-1.png" title="plot of chunk class03-chunk-4" alt="plot of chunk class03-chunk-4" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-6">
+  <div>
+    <h2>Simple Regression</h2>
+    <pre><code class="r">library(ggplot2) ## load the plotting package
+theme_set(theme_bw()) ## set default theme with a white background
+ggplot(data=women, aes(x=height,y=weight)) + geom_point() 
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-5-1.png" title="plot of chunk class03-chunk-5" alt="plot of chunk class03-chunk-5" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-7">
+  <div>
+    <h2>Simple Regression</h2>
+    <pre><code class="r">## plot with regression line
+ggplot(women, aes(x = height, y = weight)) + geom_point() + 
+  geom_smooth(method=lm, # add linear regression line
+              se=FALSE) # (by default includes 95% confidence region)  
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-6-1.png" title="plot of chunk class03-chunk-6" alt="plot of chunk class03-chunk-6" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-8">
+  <div>
+    <h2>Simple Regression</h2>
+    <pre><code class="r">## perform linear regression
+fit = lm(weight ~ height, data=women)
+summary(fit)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-9">
+  <div>
+    <h2>What does the result mean?</h2>
+    <p>\[ \hat{weight}=-87.52 + 3.45\times height \]</p>
+  
+<div class='left' style='float:left;width:40%'>
+<ul>
+<li>There&#39;s an expected increase of 3.45 pounds of weight for every 1 inch increase in height. </li>
+<li>The intercept is merely an adjustment constant.<br></li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:58%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-10">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(1) Is the model statistically significant?</strong></p>
+
+<ul>
+<li>Check the <strong>F statistic</strong> at the bottom of the summary.</li>
+<li>The F statistic tells you whether the model is insignificant or significant. Big p-value indicates a high likelihood of insignificance. (Further reading: F-statistic <a href="http://www.statisticshowto.com/f-statistic/">1</a>, <a href="https://onlinecourses.science.psu.edu/stat501/node/295">2</a>.)</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-11">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(2) Are the coefficients significant?</strong></p>
+
+<ul>
+<li>Check the coefficient&#39;s <strong>t statistics</strong> and <strong>p-values</strong> in the summary, or check their confidence intervals.</li>
+<li>If a variable&#39;s coefficient is zero then the variable is worthless; it adds nothing to the model. </li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-12">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(2) Are the coefficients significant?</strong></p>
+
+<ul>
+<li>The p-value is a probability that the coefficient is not significant. Big is bad because it indicates a high likelihood of insignificance.</li>
+<li>The regression coefficient (3.45) is significantly different from zero (p &lt; 0.001).</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-13">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(3) Is the model useful?</strong></p>
+
+<ul>
+<li>Check the <strong>R-squared</strong> near the bottom of the summary.</li>
+<li>R-squared is a measure of the model&#39;s quality -- the fraction of the variance of y that is explained by the regression model. Bigger is better.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-14">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(3) Is the model useful?</strong></p>
+
+<ul>
+<li>The multiple R-squared (0.991) indicates that the model accounts for 99.1 percent of the variance in weights. The multiple R-squared is also the squared correlation between the actual and predicted value. (Further reading: Correlation and R-Squared <a href="http://mathworld.wolfram.com/CorrelationCoefficient.html">1</a>, <a href="https://economictheoryblog.com/2014/11/05/the-coefficient-of-determination-latex-r2/">2</a>, <a href="http://www.win-vector.com/blog/2011/11/correlation-and-r-squared/">3</a>.)</li>
+<li>The adjusted value accounts for the number of variables in your model and so is a more realistic assessment of its effectiveness.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-15">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(4) Does the model fit the data well?</strong></p>
+
+<ul>
+<li>Plot the residuals and check the regression diagnostics.</li>
+<li>The residual standard error (1.53 lbs.) can be thought of as the average error in predicting weight from height using this model. </li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-16">
+  <div>
+    <h2>Plot the residuals</h2>
+    <pre><code class="r">## plot the residuals and check if the residuals appear to be approximately normal
+plot(density(resid(fit)))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-15-1.png" title="plot of chunk class03-chunk-15" alt="plot of chunk class03-chunk-15" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-17">
+  <div>
+    <h2>Understand the summary</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<p><strong>(5) Does the data satisfy the assumptions behind linear regression?</strong></p>
+
+<ul>
+<li>Check whether the diagnostics confirm that a linear model is reasonable for your data.</li>
+<li>If the residuals have a normal distribution, then the first quartile (1Q) and third quartile (3Q) should have about the same magnitude.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height, data = women)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## height        3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-18">
+  <div>
+    <h2>Plot the residuals</h2>
+    <pre><code class="r">qqnorm(resid(fit)) # a quantile normal plot 
+qqline(resid(fit))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-17-1.png" title="plot of chunk class03-chunk-17" alt="plot of chunk class03-chunk-17" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-19">
+  <div>
+    <h2>Check statistical assumptions</h2>
+    <pre><code class="r">## plot regression diagnostics
+par(mfrow=c(2,2))
+plot(fit)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-18-1.png" title="plot of chunk class03-chunk-18" alt="plot of chunk class03-chunk-18" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-20">
+  <div>
+    <h2>Check statistical assumptions</h2>
+      
+<div class='left' style='float:left;width:50%'>
+<p><strong>Normality</strong></p>
+
+<ul>
+<li>If the dependent variable is normally distributed for a fixed set of predictor values, then the residual values should be normally distributed with a mean of 0. </li>
+<li>The <strong>Normal Q-Q plot</strong> (upper right) is a probability plot of the standardized residuals against the values that would be expected under normality. If you&#39;ve met the normality assumption, the points on this graph should fall on the straight 45-degree line. If they don&#39;t, you&#39;ve clearly violated the normality assumption.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <p><img src="assets/fig/class03-chunk-19-1.png" title="plot of chunk class03-chunk-19" alt="plot of chunk class03-chunk-19" width="420" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-21">
+  <div>
+    <h2>Check statistical assumptions</h2>
+      
+<div class='left' style='float:left;width:50%'>
+<p><strong>Independence</strong></p>
+
+<ul>
+<li>You have to use your understanding of how the data were collected. There&#39;s no a priori reason to believe that one woman&#39;s weight influences another woman&#39;s weight. If you found out that the data were sampled from families, you may have to adjust your assumption of independence.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <p><img src="assets/fig/class03-chunk-20-1.png" title="plot of chunk class03-chunk-20" alt="plot of chunk class03-chunk-20" width="420" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-22">
+  <div>
+    <h2>Check statistical assumptions</h2>
+      
+<div class='left' style='float:left;width:50%'>
+<p><strong>Linearity</strong></p>
+
+<ul>
+<li>If the dependent variable is linearly related to the independent variables, there should be no systematic relationship between the residuals and the predicted (that is, fitted) values. </li>
+<li>In other words, the model should capture all the systematic variance present in the data, leaving nothing but random noise. </li>
+<li>In the <strong>Residuals vs Fitted</strong> graph (upper left), you see clear evidence of a curved relationship, which suggests that you may want to add a quadratic term to the regression.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <p><img src="assets/fig/class03-chunk-21-1.png" title="plot of chunk class03-chunk-21" alt="plot of chunk class03-chunk-21" width="420" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-23">
+  <div>
+    <h2>Check statistical assumptions</h2>
+      
+<div class='left' style='float:left;width:50%'>
+<p><strong>Homoscedasticity</strong></p>
+
+<ul>
+<li>If you&#39;ve met the constant variance assumption, the points in the <strong>Scale-Location</strong> graph (bottom left) should be a random band around a horizontal line. You seem to meet this assumption.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <p><img src="assets/fig/class03-chunk-22-1.png" title="plot of chunk class03-chunk-22" alt="plot of chunk class03-chunk-22" width="420" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="multiple-linear-regression">
+  <div>
+    <h2>Multiple linear regression</h2>
+    <pre><code class="r">## we&#39;ll use the state.x77 dataset in the base package
+states = as.data.frame(state.x77[,c(&quot;Murder&quot;, &quot;Population&quot;,
+                                     &quot;Illiteracy&quot;, &quot;Income&quot;, &quot;Frost&quot;)])
+head(states)
+</code></pre>
+
+<pre><code>##            Murder Population Illiteracy Income Frost
+## Alabama      15.1       3615        2.1   3624    20
+## Alaska       11.3        365        1.5   6315   152
+## Arizona       7.8       2212        1.8   4530    15
+## Arkansas     10.1       2110        1.9   3378    65
+## California   10.3      21198        1.1   5114    20
+## Colorado      6.8       2541        0.7   4884   166
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-25">
+  <div>
+    <h2>Examining data</h2>
+    <pre><code class="r">cor(states)
+</code></pre>
+
+<pre><code>##                Murder Population Illiteracy     Income      Frost
+## Murder      1.0000000  0.3436428  0.7029752 -0.2300776 -0.5388834
+## Population  0.3436428  1.0000000  0.1076224  0.2082276 -0.3321525
+## Illiteracy  0.7029752  0.1076224  1.0000000 -0.4370752 -0.6719470
+## Income     -0.2300776  0.2082276 -0.4370752  1.0000000  0.2262822
+## Frost      -0.5388834 -0.3321525 -0.6719470  0.2262822  1.0000000
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-26">
+  <div>
+    <h2>Examining data</h2>
+    <pre><code class="r">## examining bivariate relationships using &#39;scatterplotMatrix&#39; in the &#39;car&#39; package
+scatterplotMatrix(states, spread=FALSE, lty.smooth=2,
+                  main=&quot;Scatter Plot Matrix&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-25-1.png" title="plot of chunk class03-chunk-25" alt="plot of chunk class03-chunk-25" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-27">
+  <div>
+    <h2>Multiple linear regression</h2>
+    <pre><code class="r">fit = lm(Murder ~ Population + Illiteracy + Income + Frost, data=states)
+summary(fit)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Murder ~ Population + Illiteracy + Income + Frost, 
+##     data = states)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.7960 -1.6495 -0.0811  1.4815  7.6210 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.235e+00  3.866e+00   0.319   0.7510    
+## Population  2.237e-04  9.052e-05   2.471   0.0173 *  
+## Illiteracy  4.143e+00  8.744e-01   4.738 2.19e-05 ***
+## Income      6.442e-05  6.837e-04   0.094   0.9253    
+## Frost       5.813e-04  1.005e-02   0.058   0.9541    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.535 on 45 degrees of freedom
+## Multiple R-squared:  0.567,  Adjusted R-squared:  0.5285 
+## F-statistic: 14.73 on 4 and 45 DF,  p-value: 9.133e-08
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-28">
+  <div>
+    <h2>What does the result mean?</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<ul>
+<li>In multiple regression, the coefficients indicate the increase in the dependent variable for a unit change in a predictor variable, <em>holding all other predictor variables constant</em>. </li>
+<li>For example, the regression coefficient for Illiteracy is 4.14, suggesting that an increase of 1 percent in illiteracy is associated with a 4.14 percent increase in the murder rate, controlling for population, income, and temperature. </li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = Murder ~ Population + Illiteracy + Income + Frost, 
+##     data = states)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.7960 -1.6495 -0.0811  1.4815  7.6210 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.235e+00  3.866e+00   0.319   0.7510    
+## Population  2.237e-04  9.052e-05   2.471   0.0173 *  
+## Illiteracy  4.143e+00  8.744e-01   4.738 2.19e-05 ***
+## Income      6.442e-05  6.837e-04   0.094   0.9253    
+## Frost       5.813e-04  1.005e-02   0.058   0.9541    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.535 on 45 degrees of freedom
+## Multiple R-squared:  0.567,  Adjusted R-squared:  0.5285 
+## F-statistic: 14.73 on 4 and 45 DF,  p-value: 9.133e-08
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-29">
+  <div>
+    <h2>What does the result mean?</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<ul>
+<li>The coefficient is significantly different from zero at the p &lt; .0001 level. The coefficient for Frost isn&#39;t significantly different from zero (p = 0.954) suggesting that Frost and Murder aren&#39;t linearly related when controlling for the other predictor variables. </li>
+<li>Taken together, the predictor variables account for 57 percent of the variance in murder rates across states.</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## 
+## Call:
+## lm(formula = Murder ~ Population + Illiteracy + Income + Frost, 
+##     data = states)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.7960 -1.6495 -0.0811  1.4815  7.6210 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.235e+00  3.866e+00   0.319   0.7510    
+## Population  2.237e-04  9.052e-05   2.471   0.0173 *  
+## Illiteracy  4.143e+00  8.744e-01   4.738 2.19e-05 ***
+## Income      6.442e-05  6.837e-04   0.094   0.9253    
+## Frost       5.813e-04  1.005e-02   0.058   0.9541    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.535 on 45 degrees of freedom
+## Multiple R-squared:  0.567,  Adjusted R-squared:  0.5285 
+## F-statistic: 14.73 on 4 and 45 DF,  p-value: 9.133e-08
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="variable-selection">
+  <div>
+    <h2>Variable selection</h2>
+    <p><strong>Stepwise selection</strong>: variables are added to or deleted from a model one at a time.</p>
+
+<ul>
+<li>forward: add predictor variables to the model one at a time, stopping when the addition of variables would no longer improve the model</li>
+<li>backward: start with a model that includes all predictor variables, and then delete them one at a time until removing variables would degrade the quality of the model</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-31">
+  <div>
+    <h2>Variable selection</h2>
+    <pre><code class="r">## backward stepwise selection
+library(MASS)
+fit1 = lm(Murder ~ Population + Illiteracy + Income + Frost,
+          data=states)
+stepAIC(fit, direction=&quot;backward&quot;)
+</code></pre>
+
+<pre><code>## Start:  AIC=97.75
+## Murder ~ Population + Illiteracy + Income + Frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Frost       1     0.021 289.19  95.753
+## - Income      1     0.057 289.22  95.759
+## &lt;none&gt;                    289.17  97.749
+## - Population  1    39.238 328.41 102.111
+## - Illiteracy  1   144.264 433.43 115.986
+## 
+## Step:  AIC=95.75
+## Murder ~ Population + Illiteracy + Income
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Income      1     0.057 289.25  93.763
+## &lt;none&gt;                    289.19  95.753
+## - Population  1    43.658 332.85 100.783
+## - Illiteracy  1   236.196 525.38 123.605
+## 
+## Step:  AIC=93.76
+## Murder ~ Population + Illiteracy
+## 
+##              Df Sum of Sq    RSS     AIC
+## &lt;none&gt;                    289.25  93.763
+## - Population  1    48.517 337.76  99.516
+## - Illiteracy  1   299.646 588.89 127.311
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Murder ~ Population + Illiteracy, data = states)
+## 
+## Coefficients:
+## (Intercept)   Population   Illiteracy  
+##   1.6515497    0.0002242    4.0807366
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-32">
+  <div>
+    <h2>Variable selection</h2>
+      
+<div class='left' style='float:left;width:40%'>
+<ul>
+<li>You start with all four predictors in the model. For each step, the AIC column provides the model AIC resulting from the deletion of the variable listed in that row.</li>
+<li>Models with smaller AIC values (indicating adequate fit with fewer parameters) are preferred.</li>
+<li>Although stepwise selection may find a good model, there&#39;s no guarantee that it will find the best model because not every possible model is evaluated. (Alternative: all subsets method. See library <code>leaps</code>.)</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:60%'>
+  <pre><code>## Start:  AIC=97.75
+## Murder ~ Population + Illiteracy + Income + Frost
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Frost       1     0.021 289.19  95.753
+## - Income      1     0.057 289.22  95.759
+## &lt;none&gt;                    289.17  97.749
+## - Population  1    39.238 328.41 102.111
+## - Illiteracy  1   144.264 433.43 115.986
+## 
+## Step:  AIC=95.75
+## Murder ~ Population + Illiteracy + Income
+## 
+##              Df Sum of Sq    RSS     AIC
+## - Income      1     0.057 289.25  93.763
+## &lt;none&gt;                    289.19  95.753
+## - Population  1    43.658 332.85 100.783
+## - Illiteracy  1   236.196 525.38 123.605
+## 
+## Step:  AIC=93.76
+## Murder ~ Population + Illiteracy
+## 
+##              Df Sum of Sq    RSS     AIC
+## &lt;none&gt;                    289.25  93.763
+## - Population  1    48.517 337.76  99.516
+## - Illiteracy  1   299.646 588.89 127.311
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Murder ~ Population + Illiteracy, data = states)
+## 
+## Coefficients:
+## (Intercept)   Population   Illiteracy  
+##   1.6515497    0.0002242    4.0807366
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="model-performance">
+  <div>
+    <h2>Model performance</h2>
+    <pre><code class="r">## compute R-squared for the woman data
+y = women$weight; x = women$height
+fit = lm(y~x)
+summary(fit)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.7333 -1.1333 -0.3833  0.7417  3.1167 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -87.51667    5.93694  -14.74 1.71e-09 ***
+## x             3.45000    0.09114   37.85 1.09e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.525 on 13 degrees of freedom
+## Multiple R-squared:  0.991,  Adjusted R-squared:  0.9903 
+## F-statistic:  1433 on 1 and 13 DF,  p-value: 1.091e-14
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-34">
+  <div>
+    <h2>Model performance</h2>
+    <pre><code class="r">## compute R-squared for the woman data
+mean.mse = mean((rep(mean(y),length(y)) - y)^2)
+model.mse = mean(residuals(fit)^2)
+rmse = sqrt(model.mse)
+rmse ## root mean square error
+</code></pre>
+
+<pre><code>## [1] 1.419703
+</code></pre>
+
+<pre><code class="r">r2 = 1 - (model.mse / mean.mse)
+r2
+</code></pre>
+
+<pre><code>## [1] 0.9910098
+</code></pre>
+
+<pre><code class="r">cor(y, fit$fitted.values)^2
+</code></pre>
+
+<pre><code>## [1] 0.9910098
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-35">
+  <div>
+    <h2>Model performance</h2>
+    <pre><code class="r">## leave-one-out cross validation
+n = length(women$weight)
+error = dim(n)
+for (k in 1:n) {
+  train1 = c(1:n)
+  train = train1[train1!=k] ## pick elements that are different from k
+  m2 = lm(weight ~ height, data=women[train ,])
+  pred = predict(m2, newdat=women[-train ,])
+  obs = women$weight[-train]
+  error[k] = obs-pred
+}
+me=mean(error)
+me ## mean error
+</code></pre>
+
+<pre><code>## [1] 0.1148222
+</code></pre>
+
+<pre><code class="r">rmse=sqrt(mean(error^2))
+rmse ## root mean square error (out-of-sample)
+</code></pre>
+
+<pre><code>## [1] 1.743782
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="polynomial-regression">
+  <div>
+    <h2>Polynomial regression</h2>
+    <pre><code class="r">fit2 = lm(weight ~ height + I(height^2), data=women)
+summary(fit2)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = weight ~ height + I(height^2), data = women)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.50941 -0.29611 -0.00941  0.28615  0.59706 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 261.87818   25.19677  10.393 2.36e-07 ***
+## height       -7.34832    0.77769  -9.449 6.58e-07 ***
+## I(height^2)   0.08306    0.00598  13.891 9.32e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3841 on 12 degrees of freedom
+## Multiple R-squared:  0.9995, Adjusted R-squared:  0.9994 
+## F-statistic: 1.139e+04 on 2 and 12 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-37">
+  <div>
+    <h2>Polynomial regression</h2>
+    <pre><code class="r">plot(women$height,women$weight,
+     xlab=&quot;Height (in inches)&quot;,
+     ylab=&quot;Weight (in lbs)&quot;)
+lines(women$height,fitted(fit2))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-35-1.png" title="plot of chunk class03-chunk-35" alt="plot of chunk class03-chunk-35" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-38">
+  <div>
+    <h2>Polynomial regression</h2>
+    <p>\[ \hat{weight}= 261.88- 7.35\times height +0.083 \times height^2 \]</p>
+  
+<div class='left' style='float:left;width:50%'>
+<p>Both regression coefficients are significant at the p &lt; 0.0001 level. The amount of variance accounted for has increased to 99.9 percent. The significance of the squared term (t = 13.89, p &lt; .001) suggests that inclusion of the quadratic term improves the model fit.</p>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <pre><code>## 
+## Call:
+## lm(formula = weight ~ height + I(height^2), data = women)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.50941 -0.29611 -0.00941  0.28615  0.59706 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 261.87818   25.19677  10.393 2.36e-07 ***
+## height       -7.34832    0.77769  -9.449 6.58e-07 ***
+## I(height^2)   0.08306    0.00598  13.891 9.32e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3841 on 12 degrees of freedom
+## Multiple R-squared:  0.9995, Adjusted R-squared:  0.9994 
+## F-statistic: 1.139e+04 on 2 and 12 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="non-linear">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">## create testing data (sine wave)
+set.seed(1)
+x = seq(0, 1, by = 0.01)
+y = sin(2 * pi * x) + rnorm(length(x), 0, 0.1)
+df = data.frame(X = x, Y = y)
+ggplot(df, aes(x = X, y = Y)) + geom_point()
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-37-1.png" title="plot of chunk class03-chunk-37" alt="plot of chunk class03-chunk-37" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-40">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">## fit with linear regression
+summary(lm(Y ~ X, data = df)) # explain 60% of the variance
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Y ~ X, data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.00376 -0.41253 -0.00409  0.40664  0.85874 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.94111    0.09057   10.39   &lt;2e-16 ***
+## X           -1.86189    0.15648  -11.90   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4585 on 99 degrees of freedom
+## Multiple R-squared:  0.5885, Adjusted R-squared:  0.5843 
+## F-statistic: 141.6 on 1 and 99 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-41">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">ggplot(data.frame(X = x, Y = y), aes(x = X, y = Y)) +
+  geom_point() +
+  geom_smooth(method = &#39;lm&#39;, se = FALSE)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-39-1.png" title="plot of chunk class03-chunk-39" alt="plot of chunk class03-chunk-39" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-42">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">## add new features
+df &lt;- transform(df, X2 = X ^ 2)
+df &lt;- transform(df, X3 = X ^ 3)
+summary(lm(Y ~ X + X2 + X3, data = df)) # R2 from 60% to 97%, by adding two more inputs
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Y ~ X + X2 + X3, data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.32331 -0.08538  0.00652  0.08320  0.20239 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -0.16341    0.04425  -3.693 0.000367 ***
+## X            11.67844    0.38513  30.323  &lt; 2e-16 ***
+## X2          -33.94179    0.89748 -37.819  &lt; 2e-16 ***
+## X3           22.59349    0.58979  38.308  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1153 on 97 degrees of freedom
+## Multiple R-squared:  0.9745, Adjusted R-squared:  0.9737 
+## F-statistic:  1235 on 3 and 97 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode" id="slide-43">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">## add more features
+df &lt;- transform(df, X4 = X ^ 4)
+df &lt;- transform(df, X5 = X ^ 5)
+df &lt;- transform(df, X6 = X ^ 6)
+df &lt;- transform(df, X7 = X ^ 7)
+df &lt;- transform(df, X8 = X ^ 8)
+df &lt;- transform(df, X9 = X ^ 9)
+df &lt;- transform(df, X10 = X ^ 10)
+df &lt;- transform(df, X11 = X ^ 11)
+df &lt;- transform(df, X12 = X ^ 12)
+df &lt;- transform(df, X13 = X ^ 13)
+df &lt;- transform(df, X14 = X ^ 14)
+df &lt;- transform(df, X15 = X ^ 15)
+summary(lm(Y ~ X + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13 + X14 , data = df))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Y ~ X + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + 
+##     X10 + X11 + X12 + X13 + X14, data = df)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.242662 -0.038179  0.002771  0.052484  0.210917 
+## 
+## Coefficients: (1 not defined because of singularities)
+##               Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -6.909e-02  8.413e-02  -0.821    0.414
+## X            1.494e+01  1.056e+01   1.415    0.161
+## X2          -2.609e+02  4.275e+02  -0.610    0.543
+## X3           3.764e+03  7.863e+03   0.479    0.633
+## X4          -3.203e+04  8.020e+04  -0.399    0.691
+## X5           1.717e+05  5.050e+05   0.340    0.735
+## X6          -6.225e+05  2.089e+06  -0.298    0.766
+## X7           1.587e+06  5.881e+06   0.270    0.788
+## X8          -2.889e+06  1.146e+07  -0.252    0.801
+## X9           3.752e+06  1.544e+07   0.243    0.809
+## X10         -3.398e+06  1.414e+07  -0.240    0.811
+## X11          2.039e+06  8.384e+06   0.243    0.808
+## X12         -7.276e+05  2.906e+06  -0.250    0.803
+## X13          1.166e+05  4.467e+05   0.261    0.795
+## X14                 NA         NA      NA       NA
+## 
+## Residual standard error: 0.09079 on 87 degrees of freedom
+## Multiple R-squared:  0.9858, Adjusted R-squared:  0.9837 
+## F-statistic: 465.2 on 13 and 87 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-44">
+  <div>
+    <h2>Non-linear Data</h2>
+      
+<div class='left' style='float:left;width:30%'>
+<ul>
+<li>new feature correlated with the old columns</li>
+<li>the linear regression breaks down and can&#39;t find coefficients for all of the columns separately</li>
+</ul>
+
+</div>    
+<div class='right' style='float:right;width:70%'>
+  <pre><code>## 
+## Call:
+## lm(formula = Y ~ X + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + 
+##     X10 + X11 + X12 + X13 + X14, data = df)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.242662 -0.038179  0.002771  0.052484  0.210917 
+## 
+## Coefficients: (1 not defined because of singularities)
+##               Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -6.909e-02  8.413e-02  -0.821    0.414
+## X            1.494e+01  1.056e+01   1.415    0.161
+## X2          -2.609e+02  4.275e+02  -0.610    0.543
+## X3           3.764e+03  7.863e+03   0.479    0.633
+## X4          -3.203e+04  8.020e+04  -0.399    0.691
+## X5           1.717e+05  5.050e+05   0.340    0.735
+## X6          -6.225e+05  2.089e+06  -0.298    0.766
+## X7           1.587e+06  5.881e+06   0.270    0.788
+## X8          -2.889e+06  1.146e+07  -0.252    0.801
+## X9           3.752e+06  1.544e+07   0.243    0.809
+## X10         -3.398e+06  1.414e+07  -0.240    0.811
+## X11          2.039e+06  8.384e+06   0.243    0.808
+## X12         -7.276e+05  2.906e+06  -0.250    0.803
+## X13          1.166e+05  4.467e+05   0.261    0.795
+## X14                 NA         NA      NA       NA
+## 
+## Residual standard error: 0.09079 on 87 degrees of freedom
+## Multiple R-squared:  0.9858, Adjusted R-squared:  0.9837 
+## F-statistic: 465.2 on 13 and 87 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-45">
+  <div>
+    <h2>Non-linear Data</h2>
+    <pre><code class="r">## use &#39;poly&#39; function
+## similar to X + X^2 + X^3 + ... + X^14, but with orthogonal columns
+
+summary(lm(Y ~ poly(X, degree = 14), data = df))
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Y ~ poly(X, degree = 14), data = df)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.232557 -0.042933  0.002159  0.051021  0.209959 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             0.010167   0.009038   1.125   0.2638    
+## poly(X, degree = 14)1  -5.455362   0.090827 -60.063  &lt; 2e-16 ***
+## poly(X, degree = 14)2  -0.039389   0.090827  -0.434   0.6656    
+## poly(X, degree = 14)3   4.418054   0.090827  48.642  &lt; 2e-16 ***
+## poly(X, degree = 14)4  -0.047966   0.090827  -0.528   0.5988    
+## poly(X, degree = 14)5  -0.706451   0.090827  -7.778 1.48e-11 ***
+## poly(X, degree = 14)6  -0.204221   0.090827  -2.248   0.0271 *  
+## poly(X, degree = 14)7  -0.051341   0.090827  -0.565   0.5734    
+## poly(X, degree = 14)8  -0.031001   0.090827  -0.341   0.7337    
+## poly(X, degree = 14)9   0.077232   0.090827   0.850   0.3975    
+## poly(X, degree = 14)10  0.048088   0.090827   0.529   0.5979    
+## poly(X, degree = 14)11  0.129990   0.090827   1.431   0.1560    
+## poly(X, degree = 14)12  0.024726   0.090827   0.272   0.7861    
+## poly(X, degree = 14)13  0.023706   0.090827   0.261   0.7947    
+## poly(X, degree = 14)14  0.087906   0.090827   0.968   0.3358    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.09083 on 86 degrees of freedom
+## Multiple R-squared:  0.986,  Adjusted R-squared:  0.9837 
+## F-statistic: 431.7 on 14 and 86 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-46">
+  <div>
+    <h2>Plot Non-linear Data</h2>
+    <pre><code class="r">## restore testing data
+x &lt;- seq(0, 1, by = 0.01)
+y &lt;- sin(2 * pi * x) + rnorm(length(x), 0, 0.1)
+df0 &lt;- data.frame(X = x, Y = y)
+## using poly with degrees of 1, 3, 5, and 25
+poly.fit &lt;- lm(Y ~ poly(X, degree = 1), data = df)
+df &lt;- transform(df, PredictedY = predict(poly.fit))
+ggplot(df0 , aes(x = X, y = Y)) +
+  geom_point() + geom_line(data=df, aes(x = X, y = PredictedY))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-44-1.png" title="plot of chunk class03-chunk-44" alt="plot of chunk class03-chunk-44" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-47">
+  <div>
+    <h2>Plot Non-linear Data (degree=3)</h2>
+    <pre><code class="r">poly.fit &lt;- lm(Y ~ poly(X, degree = 3), data = df)
+df &lt;- transform(df, PredictedY = predict(poly.fit))
+ggplot(df0 , aes(x = X, y = Y)) +
+  geom_point() + geom_line(data=df, aes(x = X, y = PredictedY))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-45-1.png" title="plot of chunk class03-chunk-45" alt="plot of chunk class03-chunk-45" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-48">
+  <div>
+    <h2>Plot Non-linear Data (degree=5)</h2>
+    <pre><code class="r">poly.fit &lt;- lm(Y ~ poly(X, degree = 5), data = df)
+df &lt;- transform(df, PredictedY = predict(poly.fit))
+ggplot(df0 , aes(x = X, y = Y)) +
+  geom_point() + geom_line(data=df, aes(x = X, y = PredictedY))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-46-1.png" title="plot of chunk class03-chunk-46" alt="plot of chunk class03-chunk-46" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="slide-49">
+  <div>
+    <h2>Plot Non-linear Data (degree=25)</h2>
+    <pre><code class="r">poly.fit &lt;- lm(Y ~ poly(X, degree = 25), data = df)
+df &lt;- transform(df, PredictedY = predict(poly.fit))
+ggplot(df0 , aes(x = X, y = Y)) +
+  geom_point() + geom_line(data=df, aes(x = X, y = PredictedY))
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-47-1.png" title="plot of chunk class03-chunk-47" alt="plot of chunk class03-chunk-47" width="336" /></p>
+
+<p>model become too complex (too many parameters) and exaggerate minor fluctuations (noise) in the data</p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="cross-validation">
+  <div>
+    <h2>Cross-validation</h2>
+      
+<div class='left' style='float:left;width:70%'>
+<pre><code class="r">## split our data into a training set and test set
+n &lt;- length(x)
+indices &lt;- sort(sample(1:n, round (0.5 * n)))
+training.x &lt;- x[indices]
+training.y &lt;- y[indices]
+test.x &lt;- x[-indices]
+test.y &lt;- y[-indices]
+training.df &lt;- data.frame(X = training.x, Y = training.y)
+test.df &lt;- data.frame(X = test.x, Y = test.y)
+## use RMSE to measure the performance
+rmse &lt;- function(y, h) {
+  return(sqrt(mean((y - h) ^ 2)))
+}
+## loop over a set of polynomial degrees (from 1 to 12)
+performance &lt;- data.frame()
+for (d in 1:12) {
+  poly.fit &lt;- lm(Y ~ poly(X, degree = d), data = training.df)
+  performance &lt;- rbind(performance ,
+                       data.frame(Degree = d,
+                                  Data = &#39;Training &#39;,
+                                  RMSE = rmse(training.y, predict(poly.fit))))
+  performance &lt;- rbind(performance ,
+                       data.frame(Degree = d,
+                                  Data = &#39;Test &#39;,
+                                  RMSE = rmse(test.y, predict(poly.fit ,
+                                                              newdata = test.df))))
+}
+## plot the performance of the polynomial regression models for all the degrees
+ggplot(performance , aes(x = Degree , y = RMSE , linetype = Data)) +
+  geom_point() +
+  geom_line()
+</code></pre>
+
+</div>    
+<div class='right' style='float:right;width:30%'>
+  <p><img src="assets/fig/class03-chunk-49-1.png" title="plot of chunk class03-chunk-49" alt="plot of chunk class03-chunk-49" width="336" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="regularization">
+  <div>
+    <h2>Regularization</h2>
+    <pre><code class="r">lm.fit &lt;- lm(y ~ x)
+l2.model.complexity &lt;- sum(coef(lm.fit) ^ 2) # L2 norm (sum of squaring values)
+l1.model.complexity &lt;- sum(abs(coef(lm.fit))) # L1 norm (sum of absolute values)
+library(&#39;glmnet&#39;)
+x &lt;- matrix(x) ## input of glmnet has to be in matrix form
+glmnet(poly(x, degree = 2), y)
+</code></pre>
+
+<pre><code>## 
+## Call:  glmnet(x = poly(x, degree = 2), y = y) 
+## 
+##    Df  %Dev  Lambda
+## 1   0  0.00 0.53530
+## 2   1 10.09 0.48780
+## 3   1 18.47 0.44450
+## 4   1 25.43 0.40500
+## 5   1 31.20 0.36900
+## 6   1 35.99 0.33620
+## 7   1 39.97 0.30630
+## 8   1 43.28 0.27910
+## 9   1 46.02 0.25430
+## 10  1 48.30 0.23170
+## 11  1 50.19 0.21120
+## 12  1 51.76 0.19240
+## 13  1 53.06 0.17530
+## 14  1 54.15 0.15970
+## 15  1 55.04 0.14550
+## 16  1 55.79 0.13260
+## 17  1 56.41 0.12080
+## 18  1 56.92 0.11010
+## 19  1 57.35 0.10030
+## 20  1 57.70 0.09140
+## 21  1 58.00 0.08328
+## 22  1 58.24 0.07588
+## 23  1 58.45 0.06914
+## 24  1 58.61 0.06300
+## 25  1 58.75 0.05740
+## 26  1 58.87 0.05230
+## 27  1 58.97 0.04766
+## 28  1 59.05 0.04342
+## 29  1 59.11 0.03957
+## 30  1 59.17 0.03605
+## 31  1 59.21 0.03285
+## 32  1 59.25 0.02993
+## 33  1 59.28 0.02727
+## 34  1 59.31 0.02485
+## 35  1 59.33 0.02264
+## 36  1 59.35 0.02063
+## 37  1 59.36 0.01880
+## 38  1 59.38 0.01713
+## 39  1 59.39 0.01561
+## 40  1 59.40 0.01422
+## 41  2 59.40 0.01296
+## 42  2 59.42 0.01181
+## 43  2 59.43 0.01076
+## 44  2 59.43 0.00980
+## 45  2 59.44 0.00893
+## 46  2 59.45 0.00814
+## 47  2 59.45 0.00741
+## 48  2 59.46 0.00676
+## 49  2 59.46 0.00616
+## 50  2 59.46 0.00561
+## 51  2 59.46 0.00511
+## 52  2 59.47 0.00466
+## 53  2 59.47 0.00424
+## 54  2 59.47 0.00387
+## 55  2 59.47 0.00352
+## 56  2 59.47 0.00321
+## 57  2 59.47 0.00292
+## 58  2 59.47 0.00266
+## 59  2 59.47 0.00243
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-52">
+  <div>
+    <h2>Regularization</h2>
+      
+<div class='left' style='float:left;width:70%'>
+<pre><code class="r">## get an entire set of possible regularizations (from the strongest to the weakest).
+## Df: how many nonzero coefficients in the model;
+## %Dev: the R2 for this model; 
+## Lambda: controls how complex the model is (a.k.a. hyperparameter)
+
+## split it into a training set and a test set
+n &lt;- length(x)
+indices &lt;- sort(sample(1:n, round (0.5 * n)))
+training.x &lt;- x[indices]
+training.y &lt;- y[indices]
+test.x &lt;- x[-indices]
+test.y &lt;- y[-indices]
+df &lt;- data.frame(X = x, Y = y)
+training.df &lt;- data.frame(X = training.x, Y = training.y)
+test.df &lt;- data.frame(X = test.x, Y = test.y)
+rmse &lt;- function(y, h) {
+  return(sqrt(mean((y - h) ^ 2)))
+}
+## loop over values of Lambda
+glmnet.fit &lt;- with(training.df, glmnet(poly(X, degree = 10), Y))
+lambdas &lt;- glmnet.fit$lambda ## regularization parameter (sequence)
+performance &lt;- data.frame()
+for (lambda in lambdas) {
+  performance &lt;- rbind(performance ,
+                       data.frame(Lambda = lambda ,
+                                  RMSE = rmse(test.y, with(test.df, predict(glmnet.fit , poly(X, degree = 10), s = lambda)))))
+}
+## plot to see the model performance w.r.t. the range of lambdas
+ggplot(performance , aes(x = Lambda , y = RMSE)) +
+  geom_point() +
+  geom_line()
+</code></pre>
+
+</div>    
+<div class='right' style='float:right;width:30%'>
+  <p><img src="assets/fig/class03-chunk-52-1.png" title="plot of chunk class03-chunk-52" alt="plot of chunk class03-chunk-52" width="336" /></p>
+
+</div>
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-53">
+  <div>
+    <h2>Regularization</h2>
+    <pre><code class="r">## we get the best possible performance with Lambda near 0.05; select that value and train our model
+## using only 3 nonzero coefficients instead of 10
+
+best.lambda &lt;- with(performance , Lambda[which(RMSE == min(RMSE))])
+glmnet.fit &lt;- with(df, glmnet(poly(X, degree = 10), Y))
+## use coef to examine the structure of our regularized model
+coef(glmnet.fit , s = best.lambda)
+</code></pre>
+
+<pre><code>## 11 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                        1
+## (Intercept) -0.001051649
+## 1           -5.217478304
+## 2            .          
+## 3            4.162161101
+## 4            .          
+## 5           -0.276378285
+## 6            .          
+## 7            .          
+## 8            .          
+## 9            .          
+## 10           .
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="local-poly">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">library(locfit)
+
+## first we read in the data
+data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
+ethanol &lt;- read.csv(sprintf (&quot;%s/ethanol.csv&quot;,data.url))
+colnames(ethanol) &lt;- c(&#39;NOx&#39;,&#39;C&#39;,&#39;E&#39;)
+ethanol [1:3,]
+</code></pre>
+
+<pre><code>##     NOx  C     E
+## 1 3.741 12 0.907
+## 2 2.295 12 0.761
+## 3 1.498 12 1.108
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-55">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">## standard regression of NOx on the equivalence ratio dosen&#39;t work
+fitreg=lm(NOx~E,data=ethanol)
+plot(NOx~E,data=ethanol)
+abline(fitreg)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-55-1.png" title="plot of chunk class03-chunk-55" alt="plot of chunk class03-chunk-55" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-56">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">## local polynomial regression of NOx on the equivalence ratio
+## fit with a 50% nearest neighbor bandwidth.
+fit &lt;- locfit(NOx~lp(E,nn=0.5),data=ethanol)
+plot(fit)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-56-1.png" title="plot of chunk class03-chunk-56" alt="plot of chunk class03-chunk-56" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-57">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">## cross-validation
+alpha &lt;-seq(0.20,1,by=0.01)
+n1=length(alpha)
+g=matrix(nrow=n1,ncol=4)
+for (k in 1:length(alpha)) {
+  g[k,]&lt;-gcv(NOx~lp(E,nn=alpha[k]),data=ethanol)
+}
+head(g) 
+</code></pre>
+
+<pre><code>##           [,1]     [,2]     [,3]      [,4]
+## [1,] -3.220084 18.81266 16.42649 0.1183932
+## [2,] -3.249601 17.61614 15.43623 0.1154507
+## [3,] -3.319650 16.77004 14.75204 0.1151542
+## [4,] -3.336464 15.44404 13.88921 0.1115457
+## [5,] -3.373011 14.52391 13.11543 0.1099609
+## [6,] -3.408908 13.96789 12.63493 0.1094681
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-58">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">plot(g[,4]~g[,3],ylab=&quot;GCV&quot;,xlab=&quot;degrees of freedom&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-58-1.png" title="plot of chunk class03-chunk-58" alt="plot of chunk class03-chunk-58" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-59">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+    <pre><code class="r">f1=locfit(NOx~lp(E,nn=0.30),data=ethanol)
+f1; plot(f1)
+</code></pre>
+
+<pre><code>## Call:
+## locfit(formula = NOx ~ lp(E, nn = 0.3), data = ethanol)
+## 
+## Number of observations:          88 
+## Family:  Gaussian 
+## Fitted Degrees of freedom:       10.517 
+## Residual scale:                  0.306
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-59-1.png" title="plot of chunk class03-chunk-59" alt="plot of chunk class03-chunk-59" width="378" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="lasso">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
+prostate &lt;- read.csv(sprintf (&quot;%s/prostate.csv&quot;,data.url))
+prostate [1:3,]
+</code></pre>
+
+<pre><code>##       lcavol age      lbph       lcp gleason       lpsa
+## 1 -0.5798185  50 -1.386294 -1.386294       6 -0.4307829
+## 2 -0.9942523  58 -1.386294 -1.386294       6 -0.1625189
+## 3 -0.5108256  74 -1.386294 -1.386294       7 -0.1625189
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-61">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">m1=lm(lcavol~.,data=prostate)
+summary(m1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = lcavol ~ ., data = prostate)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.88964 -0.52719 -0.07263  0.57834  1.98728 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -1.49371    0.94261  -1.585   0.1165    
+## age          0.01902    0.01063   1.789   0.0769 .  
+## lbph        -0.08918    0.05376  -1.659   0.1006    
+## lcp          0.29727    0.06762   4.396 2.98e-05 ***
+## gleason      0.05240    0.11965   0.438   0.6625    
+## lpsa         0.53955    0.07648   7.054 3.30e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.7015 on 91 degrees of freedom
+## Multiple R-squared:  0.6642, Adjusted R-squared:  0.6457 
+## F-statistic:    36 on 5 and 91 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-62">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">## the model.matrix statement defines the model to be fitted
+x &lt;- model.matrix(lcavol~age+lbph+lcp+gleason+lpsa ,data=prostate)
+x=x[,-1] # stripping off the column of 1s as LASSO includes the intercept automatically
+
+library(lars)
+## lasso on all data
+lasso &lt;- lars(x=x,y=prostate$lcavol ,trace=TRUE)
+</code></pre>
+
+<pre><code>## LASSO sequence
+## Computing X&#39;X .....
+## LARS Step 1 :     Variable 5     added
+## LARS Step 2 :     Variable 3     added
+## LARS Step 3 :     Variable 1     added
+## LARS Step 4 :     Variable 4     added
+## LARS Step 5 :     Variable 2     added
+## Computing residuals, RSS etc .....
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-63">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">## trace of lasso (standardized) coefficients for varying penalty
+plot(lasso)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-63-1.png" title="plot of chunk class03-chunk-63" alt="plot of chunk class03-chunk-63" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-64">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">lasso
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lars(x = x, y = prostate$lcavol, trace = TRUE)
+## R-squared: 0.664 
+## Sequence of LASSO moves:
+##      lpsa lcp age gleason lbph
+## Var     5   3   1       4    2
+## Step    1   2   3       4    5
+</code></pre>
+
+<pre><code class="r">coef(lasso ,s=c(.25,.50,0.75,1.0),mode=&quot;fraction&quot;)
+</code></pre>
+
+<pre><code>##              age         lbph        lcp    gleason      lpsa
+## [1,] 0.000000000  0.000000000 0.06519506 0.00000000 0.2128290
+## [2,] 0.000000000  0.000000000 0.18564339 0.00000000 0.3587292
+## [3,] 0.005369985 -0.001402051 0.28821232 0.01136331 0.4827810
+## [4,] 0.019023772 -0.089182565 0.29727207 0.05239529 0.5395488
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode cc" id="slide-65">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">## cross -validation using 10 folds
+cv.lars(x=x,y=prostate$lcavol ,K=10)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-65-1.png" title="plot of chunk class03-chunk-65" alt="plot of chunk class03-chunk-65" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-66">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">## another way to evaluate lasso&#39;s out-of-sample prediction performance
+MSElasso25=dim(10)
+MSElasso50=dim(10)
+MSElasso75=dim(10)
+MSElasso100=dim(10)
+set.seed(1)
+for(i in 1:10){
+  train &lt;- sample(1:nrow(prostate),80)
+  lasso &lt;- lars(x=x[train ,],y=prostate$lcavol[train])
+  MSElasso25[i]=
+    mean((predict(lasso ,x[-train ,],s=.25,mode=&quot;fraction&quot;)$fit -prostate$lcavol[-train ])^2)
+  MSElasso50[i]=
+    mean((predict(lasso ,x[-train ,],s=.50,mode=&quot;fraction&quot;)$fit -prostate$lcavol[-train ])^2)
+  MSElasso75[i]=
+    mean((predict(lasso ,x[-train ,],s=.75,mode=&quot;fraction&quot;)$fit -prostate$lcavol[-train ])^2)
+  MSElasso100[i]=
+    mean((predict(lasso ,x[-train ,],s=1.00,mode=&quot;fraction&quot;)$fit -prostate$lcavol[-train ])^2)
+}
+mean(MSElasso25)
+</code></pre>
+
+<pre><code>## [1] 1.015357
+</code></pre>
+
+<pre><code class="r">mean(MSElasso50)
+</code></pre>
+
+<pre><code>## [1] 0.6797424
+</code></pre>
+
+<pre><code class="r">mean(MSElasso75)
+</code></pre>
+
+<pre><code>## [1] 0.5537717
+</code></pre>
+
+<pre><code class="r">mean(MSElasso100)
+</code></pre>
+
+<pre><code>## [1] 0.5299123
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-67">
+  <div>
+    <h2>LASSO</h2>
+    <pre><code class="r">boxplot(MSElasso25 ,MSElasso50 ,MSElasso75 ,MSElasso100 ,
+        ylab=&quot;MSE&quot;, sub=&quot;LASSO model&quot;,
+        xlab=&quot;s=0.25 s=0.50 s=0.75 s=1.0(LS)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-67-1.png" title="plot of chunk class03-chunk-67" alt="plot of chunk class03-chunk-67" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>

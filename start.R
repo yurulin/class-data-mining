@@ -102,7 +102,10 @@ if (0) {
     slidify("class023.Rmd")
     
   }
-  
+  if (1) { ## class03
+    opts_knit$set(unnamed.chunk.label='class03-chunk')
+    slidify("class03.Rmd")
+  }
 }
 
 ## Step 4: Publish Deck
