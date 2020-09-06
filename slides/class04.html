@@ -1,0 +1,1437 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 04</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 04">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 04</h1>
+	</header>
+  <section class="slide " id="toc">
+  <div>
+    <h2>Class 04</h2>
+    <ul>
+<li><a href="#set-up">Set up</a></li>
+<li><a href="#two-class">Split data into two classes</a></li>
+<li><a href="#logistic-regression">Logistic Regression</a></li>
+<li><a href="##ex1">Example: Death penelty data</a></li>
+<li><a href="##ex2">Example: Delayed flights</a></li>
+<li><a href="#knn">kNN</a></li>
+</ul>
+
+  </div>
+</section>
+<section class="slide code" id="set-up">
+  <div>
+    <h2>Install R packages</h2>
+    <pre><code class="r">## this tutorial uses the following packages
+install.packages(&#39;ROCR&#39;) 
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="two-class">
+  <div>
+    <h2>Split data into two classes</h2>
+    <p>The examples are taken from <a href="http://www.wiley.com/WileyCDA/WileyTitle/productCd-111844714X.html">Data Mining and Business Analytics with R</a> and <a href="http://shop.oreilly.com/product/0636920018483.do">Machine Learning for Hackers</a>.</p>
+
+<pre><code class="r">library(ggplot2) ## use ggplot for plotting
+data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/ml_hackers/&#39;
+data.file = file.path(data.url , &#39;01_heights_weights_genders.csv&#39;)
+heights.weights &lt;- read.csv(data.file , header = TRUE , sep = &#39;,&#39;)
+# visualized their gender as the color of each point
+ggplot(heights.weights, aes(x = Weight , y = Height , color = Gender)) +
+  geom_point()
+</code></pre>
+
+<p><img src="assets/fig/class04-chunk-2-1.png" title="plot of chunk class04-chunk-2" alt="plot of chunk class04-chunk-2" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="slide-4">
+  <div>
+    <h2>Split data into two classes</h2>
+    <pre><code class="r">heights.weights = transform(heights.weights , Male = ifelse(Gender == &#39;Male&#39;, 1, 0))
+heights.weights [1:3,]
+</code></pre>
+
+<pre><code>##   Gender   Height   Weight Male
+## 1   Male 73.84702 241.8936    1
+## 2   Male 68.78190 162.3105    1
+## 3   Male 74.11011 212.7409    1
+</code></pre>
+
+<p>There are several handy ways to &quot;recode&quot; variables. Check out, e.g.,</p>
+
+<ul>
+<li>Use <code>revalue</code> or <code>mapvalues</code> in <code>plyr</code> package; see <a href="http://www.cookbook-r.com/Manipulating_data/Recoding_data/">Recoding data</a> </li>
+<li>Use <code>fct_recode</code>, <code>fct_relevel</code>, etc. in <code>tidyverse</code> package; see <a href="https://r4ds.had.co.nz/factors.html">15 Factors | R for Data Science</a><br></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="logistic-regression">
+  <div>
+    <h2>Logistic Regression</h2>
+    <h2>Example: Death penelty data</h2>
+
+<ul>
+<li>objective: to identify whether the death penalty more likely if the victim is white, or the crime is more aggravating</li>
+<li>response variable: getting death panelty or not</li>
+<li>explanatory variables: severity of the crime, race of victim (black: 0; white: 1), etc</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="#ex1">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## analyzing individual observations
+data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
+dpen = read.csv(sprintf(&quot;%s/DeathPenalty.csv&quot;,data.url))
+dpen[1:4,]
+</code></pre>
+
+<pre><code>##   Agg VRace Death
+## 1   1     1     1
+## 2   1     1     1
+## 3   1     1     0
+## 4   1     1     0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-7">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">m1=glm(Death~VRace+Agg,family=binomial(link=&#39;logit&#39;),data=dpen)
+m1
+</code></pre>
+
+<pre><code>## 
+## Call:  glm(formula = Death ~ VRace + Agg, family = binomial(link = &quot;logit&quot;), 
+##     data = dpen)
+## 
+## Coefficients:
+## (Intercept)        VRace          Agg  
+##      -6.676        1.811        1.540  
+## 
+## Degrees of Freedom: 361 Total (i.e. Null);  359 Residual
+## Null Deviance:       321.9 
+## Residual Deviance: 113.5     AIC: 119.5
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-8">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">summary(m1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## glm(formula = Death ~ VRace + Agg, family = binomial(link = &quot;logit&quot;), 
+##     data = dpen)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7526  -0.2658  -0.1083  -0.1083   3.2069  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -6.6760     0.7574  -8.814  &lt; 2e-16 ***
+## VRace         1.8106     0.5361   3.377 0.000732 ***
+## Agg           1.5397     0.1867   8.246  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 321.88  on 361  degrees of freedom
+## Residual deviance: 113.48  on 359  degrees of freedom
+## AIC: 119.48
+## 
+## Number of Fisher Scoring iterations: 7
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-9">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## calculating logits
+exp(m1$coef[2])
+</code></pre>
+
+<pre><code>##  VRace 
+## 6.1144
+</code></pre>
+
+<pre><code class="r">exp(m1$coef[3])
+</code></pre>
+
+<pre><code>##      Agg 
+## 4.663011
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode" id="slide-10">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## plotting probability of getting death penalty as a function of aggravation
+## separately for black (in black) and white (in red) victim
+n.dots = 501 ## number of dots in the curves (the nubmer is set to make the curves smooth)
+x.ag=dim(n.dots) ## x-value is the aggravating level (severity of the crime)
+y.black=dim(n.dots) ## y-value for the black victim curve
+y.white=dim(n.dots) ## y-value for the white victim curve
+for (i in 1:n.dots) {
+  x.ag[i]=(99+i)/100
+  is.white = 0
+  y.black[i]=exp(m1$coef[1]+m1$coef[2]*is.white+m1$coef[3]*x.ag[i])/(1+exp(m1$coef[1]+m1$coef[2]*is.white+m1$coef[3]*x.ag[i]))
+  is.white = 1
+  y.white[i]=exp(m1$coef[1]+m1$coef[2]*is.white+m1$coef[3]*x.ag[i])/(1+exp(m1$coef[1]+m1$coef[2]*is.white+m1$coef[3]*x.ag[i]))
+}
+plot(y.black~x.ag,type=&quot;l&quot;,col=&quot;black&quot;,ylab=&quot;Prob[Death]&quot;,xlab=&quot;Aggravation&quot;,ylim=c(0,1),main=&quot;red: white victim; black: black victim&quot;)
+points(y.white~x.ag,type=&quot;l&quot;,col=&quot;red&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class04-chunk-8-1.png" title="plot of chunk class04-chunk-8" alt="plot of chunk class04-chunk-8" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-11">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## another format for logistic regression:
+## summarized data
+dpenother &lt;- read.csv(sprintf(&quot;%s/DeathPenaltyOther.csv&quot;,data.url))
+dpenother
+</code></pre>
+
+<pre><code>##    Agg VicRace VRace Death Freq
+## 1    1   White     1     1    2
+## 2    1   White     1     0   60
+## 3    1   Black     0     1    1
+## 4    1   Black     0     0  181
+## 5    2   White     1     1    2
+## 6    2   White     1     0   15
+## 7    2   Black     0     1    1
+## 8    2   Black     0     0   21
+## 9    3   White     1     1    6
+## 10   3   White     1     0    7
+## 11   3   Black     0     1    2
+## 12   3   Black     0     0    9
+## 13   4   White     1     1    9
+## 14   4   White     1     0    3
+## 15   4   Black     0     1    2
+## 16   4   Black     0     0    4
+## 17   5   White     1     1    9
+## 18   5   Black     0     1    4
+## 19   5   Black     0     0    3
+## 20   6   White     1     1   17
+## 21   6   Black     0     1    4
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-12">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">m1=glm(Death~VRace+Agg,family=binomial,weights=Freq,data=dpenother)
+m1
+</code></pre>
+
+<pre><code>## 
+## Call:  glm(formula = Death ~ VRace + Agg, family = binomial, data = dpenother, 
+##     weights = Freq)
+## 
+## Coefficients:
+## (Intercept)        VRace          Agg  
+##      -6.676        1.811        1.540  
+## 
+## Degrees of Freedom: 20 Total (i.e. Null);  18 Residual
+## Null Deviance:       321.9 
+## Residual Deviance: 113.5     AIC: 119.5
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode compact" id="slide-13">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">summary(m1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## glm(formula = Death ~ VRace + Agg, family = binomial, data = dpenother, 
+##     weights = Freq)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.0355  -1.9341   0.7711   2.6921   3.6666  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -6.6760     0.7574  -8.814  &lt; 2e-16 ***
+## VRace         1.8106     0.5361   3.377 0.000732 ***
+## Agg           1.5397     0.1867   8.246  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 321.88  on 20  degrees of freedom
+## Residual deviance: 113.48  on 18  degrees of freedom
+## AIC: 119.48
+## 
+## Number of Fisher Scoring iterations: 5
+</code></pre>
+
+<pre><code class="r">exp(m1$coef[2])
+</code></pre>
+
+<pre><code>##  VRace 
+## 6.1144
+</code></pre>
+
+<pre><code class="r">exp(m1$coef[3])
+</code></pre>
+
+<pre><code>##      Agg 
+## 4.663011
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="#ex2">
+  <div>
+    <h2>Logistic Regression</h2>
+    <h2>Example: Delayed Flights</h2>
+
+<ul>
+<li>response variable: whether or not a flight has been delayed by more than 15 min (coded as 0 for no delay, and 1 for delay)</li>
+<li>explanatory variables: different arrival airports, different departure airports, eight carriers, different hours of departure (6am to 10 pm), weather conditions (0 = good/1 = bad), day of week (1 for Sunday and Monday; and 0 for all other days)</li>
+<li>objective: to identify flights that are likely to be delayed (a binary classification problem)</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-15">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">library(car) ## needed to recode variables
+set.seed(1) ## reset random seed for reproducibility
+
+## read and print the data
+data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
+del &lt;- read.csv(sprintf(&quot;%s/FlightDelays.csv&quot;,data.url))
+del[1:3,]
+</code></pre>
+
+<pre><code>##   schedtime carrier deptime dest distance     date flightnumber origin weather dayweek daymonth tailnu  delay
+## 1      1455      OH    1455  JFK      184 1/1/2004         5935    BWI       0       4        1 N940CA ontime
+## 2      1640      DH    1640  JFK      213 1/1/2004         6155    DCA       0       4        1 N405FJ ontime
+## 3      1245      DH    1245  LGA      229 1/1/2004         7208    IAD       0       4        1 N695BR ontime
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-16">
+  <div>
+    <h2>Logistic Regression</h2>
+    <ul>
+<li>Convert data into desirable format: record and clean variables</li>
+</ul>
+
+<pre><code class="r">## define hours of departure
+del$sched=factor(floor(del$schedtime/100))
+del$delay=car::recode(del$delay,&quot;&#39;delayed&#39;=1;else=0&quot;)
+del$delay=as.numeric(levels(del$delay)[del$delay])
+table(del$delay)
+</code></pre>
+
+<pre><code>## 
+##    0    1 
+## 1773  428
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-17">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## Delay: 1=Monday; 2=Tuesday; 3=Wednesday; 4=Thursday; 5=Friday; 6=Saturday; 7=Sunday
+## 7=Sunday and 1=Monday coded as 1
+del$dayweek=car::recode(del$dayweek,&quot;c(1,7)=1;else=0&quot;)
+table(del$dayweek)
+</code></pre>
+
+<pre><code>## 
+##    0    1 
+## 1640  561
+</code></pre>
+
+<pre><code class="r">## omit unused variables
+del=del[,c(-1,-3,-5,-6,-7,-11,-12)]
+del[1:3,]
+</code></pre>
+
+<pre><code>##   carrier dest origin weather dayweek delay sched
+## 1      OH  JFK    BWI       0       0     0    14
+## 2      DH  JFK    DCA       0       0     0    16
+## 3      DH  LGA    IAD       0       0     0    12
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-18">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## estimation of the logistic regression model
+## explanatory variables: carrier, destination, origin, weather, day of week 
+## (weekday/weekend), scheduled hour of departure
+## create design matrix; indicators for categorical variables (factors)
+Xdel = model.matrix(delay~.,data=del)[,-1] 
+Xdel[1:3,]
+</code></pre>
+
+<pre><code>##   carrierDH carrierDL carrierMQ carrierOH carrierRU carrierUA carrierUS destJFK destLGA originDCA originIAD weather dayweek sched7 sched8 sched9 sched10 sched11
+## 1         0         0         0         1         0         0         0       1       0         0         0       0       0      0      0      0       0       0
+## 2         1         0         0         0         0         0         0       1       0         1         0       0       0      0      0      0       0       0
+## 3         1         0         0         0         0         0         0       0       1         0         1       0       0      0      0      0       0       0
+##   sched12 sched13 sched14 sched15 sched16 sched17 sched18 sched19 sched20 sched21
+## 1       0       0       1       0       0       0       0       0       0       0
+## 2       0       0       0       0       1       0       0       0       0       0
+## 3       1       0       0       0       0       0       0       0       0       0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-19">
+  <div>
+    <h2>Logistic Regression</h2>
+    <ul>
+<li>Split the data into 60% training and 40% testing</li>
+</ul>
+
+<pre><code class="r">n.total=length(del$delay)
+n.total
+</code></pre>
+
+<pre><code>## [1] 2201
+</code></pre>
+
+<pre><code class="r">n.train=floor(n.total*(0.6))
+n.train
+</code></pre>
+
+<pre><code>## [1] 1320
+</code></pre>
+
+<pre><code class="r">n.test=n.total-n.train
+n.test
+</code></pre>
+
+<pre><code>## [1] 881
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-20">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">train=sample(1:n.total,n.train) ## (randomly) sample indices for training set
+
+xtrain = Xdel[train,]
+xtest = Xdel[-train,]
+ytrain = del$delay[train]
+ytest = del$delay[-train]
+m1 = glm(delay~.,family=binomial,data=data.frame(delay=ytrain,xtrain))
+summary(m1)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## glm(formula = delay ~ ., family = binomial, data = data.frame(delay = ytrain, 
+##     xtrain))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.4046  -0.6861  -0.4582  -0.2430   2.7226  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -1.515021   0.703576  -2.153  0.03129 *  
+## carrierDH     0.140159   0.588478   0.238  0.81175    
+## carrierDL    -0.849371   0.526133  -1.614  0.10645    
+## carrierMQ    -0.053287   0.501259  -0.106  0.91534    
+## carrierOH    -1.463232   0.894321  -1.636  0.10181    
+## carrierRU    -0.351568   0.427174  -0.823  0.41050    
+## carrierUA     0.981381   1.108305   0.885  0.37590    
+## carrierUS    -1.523546   0.551514  -2.762  0.00574 ** 
+## destJFK      -0.070016   0.316065  -0.222  0.82468    
+## destLGA      -0.240846   0.336776  -0.715  0.47451    
+## originDCA    -0.393790   0.419794  -0.938  0.34822    
+## originIAD    -0.606988   0.421505  -1.440  0.14985    
+## weather      18.027536 519.717680   0.035  0.97233    
+## dayweek       0.472640   0.167997   2.813  0.00490 ** 
+## sched7        0.487451   0.535751   0.910  0.36290    
+## sched8       -0.219222   0.592975  -0.370  0.71161    
+## sched9       -0.008209   0.669891  -0.012  0.99022    
+## sched10      -1.028578   0.847835  -1.213  0.22506    
+## sched11       0.719228   0.643236   1.118  0.26351    
+## sched12       0.794848   0.497698   1.597  0.11025    
+## sched13       0.165845   0.553994   0.299  0.76466    
+## sched14       1.155163   0.466043   2.479  0.01319 *  
+## sched15       1.202345   0.495282   2.428  0.01520 *  
+## sched16       0.308490   0.513323   0.601  0.54786    
+## sched17       1.146807   0.455933   2.515  0.01189 *  
+## sched18       1.176151   0.557987   2.108  0.03504 *  
+## sched19       1.956060   0.493467   3.964 7.37e-05 ***
+## sched20       1.213506   0.697524   1.740  0.08191 .  
+## sched21       1.197663   0.485613   2.466  0.01365 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1290.0  on 1319  degrees of freedom
+## Residual deviance: 1099.1  on 1291  degrees of freedom
+## AIC: 1157.1
+## 
+## Number of Fisher Scoring iterations: 15
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode" id="slide-21">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code>## 
+## Call:
+## glm(formula = delay ~ ., family = binomial, data = data.frame(delay = ytrain, 
+##     xtrain))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.2274  -0.6731  -0.5163  -0.3339   2.5954  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)  -1.594964   0.699834  -2.279  0.02266 * 
+## carrierDH    -0.578625   0.585193  -0.989  0.32277   
+## carrierDL    -1.474599   0.525552  -2.806  0.00502 **
+## carrierMQ    -0.373780   0.497860  -0.751  0.45279   
+## carrierOH    -2.222369   0.984667  -2.257  0.02401 * 
+## carrierRU    -0.401983   0.416153  -0.966  0.33407   
+## carrierUA    -1.006988   0.960588  -1.048  0.29450   
+## carrierUS    -1.759122   0.536777  -3.277  0.00105 **
+## destJFK       0.203228   0.322231   0.631  0.52824   
+## destLGA       0.162125   0.341361   0.475  0.63483   
+## originDCA    -0.140983   0.413366  -0.341  0.73306   
+## originIAD     0.000144   0.405026   0.000  0.99972   
+## weather      17.886537 532.829711   0.034  0.97322   
+## dayweek       0.462190   0.161093   2.869  0.00412 **
+## sched7        0.528416   0.525035   1.006  0.31420   
+## sched8        0.474763   0.528860   0.898  0.36934   
+## sched9        0.141122   0.602464   0.234  0.81480   
+## sched10       0.266954   0.603873   0.442  0.65844   
+## sched11       0.639174   0.617915   1.034  0.30095   
+## sched12       0.257965   0.541586   0.476  0.63385   
+## sched13       0.189611   0.526621   0.360  0.71881   
+## sched14       1.309362   0.467026   2.804  0.00505 **
+## sched15       1.102484   0.485970   2.269  0.02329 * 
+## sched16       0.600845   0.495569   1.212  0.22535   
+## sched17       0.792445   0.459240   1.726  0.08443 . 
+## sched18       0.476172   0.617778   0.771  0.44084   
+## sched19       1.390487   0.504832   2.754  0.00588 **
+## sched20       1.093546   0.700281   1.562  0.11839   
+## sched21       1.158323   0.478791   2.419  0.01555 * 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1307.1  on 1319  degrees of freedom
+## Residual deviance: 1152.4  on 1291  degrees of freedom
+## AIC: 1210.4
+## 
+## Number of Fisher Scoring iterations: 15
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-22">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## prediction: predicted default probabilities for cases in test set
+ptest = predict(m1,newdata=data.frame(xtest),type=&quot;response&quot;)
+## the default predictions are of log-odds (probabilities on logit scale); 
+## type = &quot;response&quot; gives the predicted probabilities
+data.frame(ytest,ptest)[1:10,] ## look at the actual value vs. predicted value
+</code></pre>
+
+<pre><code>##    ytest      ptest
+## 1      0 0.09073091
+## 2      0 0.18086493
+## 8      0 0.20272142
+## 13     0 0.05179391
+## 18     0 0.30916723
+## 19     0 0.12937466
+## 20     0 0.19304772
+## 21     0 0.14106409
+## 24     0 0.30045786
+## 26     0 0.12293563
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-23">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## measuring errors: coding as 1 if probability 0.5 or larger
+btest=floor(ptest+0.5)  ## use floor function to clamp the value to 0 or 1
+conf.matrix = table(ytest,btest)
+conf.matrix
+</code></pre>
+
+<pre><code>##      btest
+## ytest   0   1
+##     0 709   3
+##     1 154  15
+</code></pre>
+
+<pre><code class="r">error=(conf.matrix[1,2]+conf.matrix[2,1])/n.test
+error
+</code></pre>
+
+<pre><code>## [1] 0.1782066
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-24">
+  <div>
+    <h2>Logistic Regression</h2>
+    <h2>Example: Delayed flights (Lift chart)</h2>
+
+<pre><code class="r">## order cases in test set according to their success prob
+## actual outcome shown next to it
+df=cbind(ptest,ytest)
+df[1:20,]
+</code></pre>
+
+<pre><code>##         ptest ytest
+## 1  0.09073091     0
+## 2  0.18086493     0
+## 8  0.20272142     0
+## 13 0.05179391     0
+## 18 0.30916723     0
+## 19 0.12937466     0
+## 20 0.19304772     0
+## 21 0.14106409     0
+## 24 0.30045786     0
+## 26 0.12293563     0
+## 30 0.09704826     0
+## 31 0.07306734     0
+## 32 0.10205278     0
+## 33 0.33457049     0
+## 37 0.17561604     0
+## 39 0.15463755     0
+## 43 0.23070081     0
+## 45 0.26202953     0
+## 47 0.30394792     0
+## 52 0.18086493     0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-25">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">rank.df=as.data.frame(df[order(ptest,decreasing=TRUE),])
+colnames(rank.df) = c(&#39;predicted&#39;,&#39;actual&#39;)
+rank.df[1:20,]
+</code></pre>
+
+<pre><code>##      predicted actual
+## 1833 1.0000000      1
+## 1828 1.0000000      1
+## 1865 1.0000000      1
+## 1850 1.0000000      1
+## 1877 1.0000000      1
+## 1914 1.0000000      1
+## 1876 0.9999999      1
+## 1832 0.9999999      1
+## 1911 0.9999999      1
+## 1916 0.9999999      1
+## 1834 0.9999999      1
+## 1871 0.9999999      1
+## 1816 0.9999999      1
+## 744  0.5291495      0
+## 1257 0.5291495      1
+## 1329 0.5291495      0
+## 1787 0.5291495      0
+## 1851 0.5291495      1
+## 265  0.4762866      1
+## 1239 0.4762866      1
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode" id="slide-26">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## overall success (delay) prob in the evaluation data set
+baserate=mean(ytest)
+baserate
+</code></pre>
+
+<pre><code>## [1] 0.1918275
+</code></pre>
+
+<pre><code class="r">## calculating the lift
+## cumulative 1&#39;s sorted by predicted values
+## cumulative 1&#39;s using the average success prob from evaluation set
+ax=dim(n.test)
+ay.base=dim(n.test)
+ay.pred=dim(n.test)
+ax[1]=1
+ay.base[1]=baserate
+ay.pred[1]=rank.df$actual[1]
+for (i in 2:n.test) {
+  ax[i]=i
+  ay.base[i]=baserate*i ## uniformly increase with rate xbar
+  ay.pred[i]=ay.pred[i-1]+rank.df$actual[i]
+}
+
+df=cbind(rank.df,ay.pred,ay.base)
+df[1:20,]
+</code></pre>
+
+<pre><code>##      predicted actual ay.pred   ay.base
+## 1833 1.0000000      1       1 0.1918275
+## 1828 1.0000000      1       2 0.3836549
+## 1865 1.0000000      1       3 0.5754824
+## 1850 1.0000000      1       4 0.7673099
+## 1877 1.0000000      1       5 0.9591373
+## 1914 1.0000000      1       6 1.1509648
+## 1876 0.9999999      1       7 1.3427923
+## 1832 0.9999999      1       8 1.5346198
+## 1911 0.9999999      1       9 1.7264472
+## 1916 0.9999999      1      10 1.9182747
+## 1834 0.9999999      1      11 2.1101022
+## 1871 0.9999999      1      12 2.3019296
+## 1816 0.9999999      1      13 2.4937571
+## 744  0.5291495      0      13 2.6855846
+## 1257 0.5291495      1      14 2.8774120
+## 1329 0.5291495      0      14 3.0692395
+## 1787 0.5291495      0      14 3.2610670
+## 1851 0.5291495      1      15 3.4528944
+## 265  0.4762866      1      16 3.6447219
+## 1239 0.4762866      1      17 3.8365494
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-27">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">plot(ax,ay.pred,xlab=&quot;number of cases&quot;,ylab=&quot;number of successes&quot;,
+main=&quot;Lift: Cum successes sorted by\n pred val/success prob&quot;)
+points(ax,ay.base,type=&quot;l&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class04-chunk-24-1.png" title="plot of chunk class04-chunk-24" alt="plot of chunk class04-chunk-24" width="336" style="display: block; margin: auto;" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-28">
+  <div>
+    <h2>Logistic Regression</h2>
+    <h2>Example: Delayed flights (ROC)</h2>
+
+<pre><code class="r">## we use probability cutoff 1/2
+## coding as 1 if probability 1/2 or larger
+cut=1/2
+gg1=floor(ptest+(1-cut))
+conf.matrix=table(ytest,btest)
+conf.matrix
+</code></pre>
+
+<pre><code>##      btest
+## ytest   0   1
+##     0 709   3
+##     1 154  15
+</code></pre>
+
+<pre><code class="r">truepos &lt;- ytest==1 &amp; ptest&gt;=cut 
+trueneg &lt;- ytest==0 &amp; ptest&lt;cut
+# Sensitivity (predict default when it does happen)
+sum(truepos)/sum(ytest==1) 
+</code></pre>
+
+<pre><code>## [1] 0.0887574
+</code></pre>
+
+<pre><code class="r"># Specificity (predict no default when it does not happen)
+sum(trueneg)/sum(ytest==0) 
+</code></pre>
+
+<pre><code>## [1] 0.9957865
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-29">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## using the ROCR package to graph the ROC curves 
+library(ROCR)
+
+## input is a data frame consisting of two columns
+## predictions in first column and actual outcomes in the second 
+
+## ROC for hold-out period
+data=data.frame(predictions=ptest,labels=ytest)
+data[1:10,]
+</code></pre>
+
+<pre><code>##    predictions labels
+## 1   0.09073091      0
+## 2   0.18086493      0
+## 8   0.20272142      0
+## 13  0.05179391      0
+## 18  0.30916723      0
+## 19  0.12937466      0
+## 20  0.19304772      0
+## 21  0.14106409      0
+## 24  0.30045786      0
+## 26  0.12293563      0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-30">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## pred: function to create prediction objects
+pred &lt;- prediction(data$predictions,data$labels)
+str(pred)
+</code></pre>
+
+<pre><code>## Formal class &#39;prediction&#39; [package &quot;ROCR&quot;] with 11 slots
+##   ..@ predictions:List of 1
+##   .. ..$ : num [1:881] 0.0907 0.1809 0.2027 0.0518 0.3092 ...
+##   ..@ labels     :List of 1
+##   .. ..$ : Ord.factor w/ 2 levels &quot;0&quot;&lt;&quot;1&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##   ..@ cutoffs    :List of 1
+##   .. ..$ : num [1:187] Inf 1 1 1 1 ...
+##   ..@ fp         :List of 1
+##   .. ..$ : num [1:187] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ tp         :List of 1
+##   .. ..$ : num [1:187] 0 1 2 3 4 5 6 7 8 9 ...
+##   ..@ tn         :List of 1
+##   .. ..$ : num [1:187] 712 712 712 712 712 712 712 712 712 712 ...
+##   ..@ fn         :List of 1
+##   .. ..$ : num [1:187] 169 168 167 166 165 164 163 162 161 160 ...
+##   ..@ n.pos      :List of 1
+##   .. ..$ : int 169
+##   ..@ n.neg      :List of 1
+##   .. ..$ : int 712
+##   ..@ n.pos.pred :List of 1
+##   .. ..$ : num [1:187] 0 1 2 3 4 5 6 7 8 9 ...
+##   ..@ n.neg.pred :List of 1
+##   .. ..$ : num [1:187] 881 880 879 878 877 876 875 874 873 872 ...
+</code></pre>
+
+<pre><code class="r">## you can also use glimpse() in `tidyverse`
+# library(tidyverse)
+# pred %&gt;% glimpse()
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-31">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">## perf: creates the input to be plotted
+## sensitivity (TPR) and one minus specificity (FPR)
+perf &lt;- performance(pred, &quot;sens&quot;, &quot;fpr&quot;)
+str(perf)
+</code></pre>
+
+<pre><code>## Formal class &#39;performance&#39; [package &quot;ROCR&quot;] with 6 slots
+##   ..@ x.name      : chr &quot;False positive rate&quot;
+##   ..@ y.name      : chr &quot;Sensitivity&quot;
+##   ..@ alpha.name  : chr &quot;Cutoff&quot;
+##   ..@ x.values    :List of 1
+##   .. ..$ : num [1:187] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..@ y.values    :List of 1
+##   .. ..$ : num [1:187] 0 0.00592 0.01183 0.01775 0.02367 ...
+##   ..@ alpha.values:List of 1
+##   .. ..$ : num [1:187] Inf 1 1 1 1 ...
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-32">
+  <div>
+    <h2>Logistic Regression</h2>
+    <pre><code class="r">plot(perf)
+</code></pre>
+
+<p><img src="assets/fig/class04-chunk-29-1.png" title="plot of chunk class04-chunk-29" alt="plot of chunk class04-chunk-29" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="knn">
+  <div>
+    <h2>kNN</h2>
+    <h2>Example: Forensic Glass</h2>
+
+<ul>
+<li>data set of 214 glass shards of six possible glass types</li>
+<li>objective: to determine why types of glass based on characteristics including the refractive index (RI) and the percentages of Na, Mg, Al, Si, K, Ca, Ba, and Fe</li>
+<li>6 groups of glass shards:
+
+<ul>
+<li>WinF: float glass window</li>
+<li>WinNF: nonfloat window</li>
+<li>Veh: vehicle window</li>
+<li>Con: container (bottles)</li>
+<li>Tabl: tableware</li>
+<li>Head: vehicle headlamp</li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-34">
+  <div>
+    <h2>kNN</h2>
+    <pre><code class="r">library(MASS)   ## a library of example datasets
+
+data(fgl)     ## loads the data into R; see help(fgl)
+fgl[1:3,]
+</code></pre>
+
+<pre><code>##      RI    Na   Mg   Al    Si    K   Ca Ba Fe type
+## 1  3.01 13.64 4.49 1.10 71.78 0.06 8.75  0  0 WinF
+## 2 -0.39 13.89 3.60 1.36 72.73 0.48 7.83  0  0 WinF
+## 3 -1.82 13.53 3.55 1.54 72.99 0.39 7.78  0  0 WinF
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-35">
+  <div>
+    <h2>kNN</h2>
+    <pre><code class="r">## use nt=200 training cases to find the nearest neighbors for 
+## the remaining 14 cases. These 14 cases become the evaluation 
+## (test, hold-out) cases
+
+n=length(fgl$type)
+nt=200
+set.seed(1) ## to make the calculations reproducible in repeated runs
+train &lt;- sample(1:n,nt)
+
+## Standardization of the data is preferable, especially if 
+## units of the features are quite different
+## could do this from scratch by calculating the mean and 
+## standard deviation of each feature, and use those to 
+## standardize.
+x &lt;- scale(fgl[,c(4,1)]) 
+x &lt;- scale(fgl[,c(1:9)]) ## using all nine dimensions (RI plus 8 chemical concentrations)
+x[1:3,]
+</code></pre>
+
+<pre><code>##           RI        Na        Mg         Al         Si           K         Ca         Ba         Fe
+## 1  0.8708258 0.2842867 1.2517037 -0.6908222 -1.1244456 -0.67013422 -0.1454254 -0.3520514 -0.5850791
+## 2 -0.2487502 0.5904328 0.6346799 -0.1700615  0.1020797 -0.02615193 -0.7918771 -0.3520514 -0.5850791
+## 3 -0.7196308 0.1495824 0.6000157  0.1904651  0.4377603 -0.16414813 -0.8270103 -0.3520514 -0.5850791
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-36">
+  <div>
+    <h2>kNN</h2>
+    <pre><code class="r">library(class)  
+nearest1 &lt;- knn(train=x[train,],test=x[-train,],cl=fgl$type[train],k=1)
+nearest5 &lt;- knn(train=x[train,],test=x[-train,],cl=fgl$type[train],k=5)
+data.frame(fgl$type[-train],nearest1,nearest5)
+</code></pre>
+
+<pre><code>##    fgl.type..train. nearest1 nearest5
+## 1              WinF      Veh     WinF
+## 2              WinF     WinF     WinF
+## 3              WinF      Veh      Veh
+## 4              WinF    WinNF    WinNF
+## 5              WinF     WinF     WinF
+## 6             WinNF    WinNF    WinNF
+## 7             WinNF     WinF     WinF
+## 8             WinNF     WinF    WinNF
+## 9             WinNF    WinNF    WinNF
+## 10            WinNF    WinNF    WinNF
+## 11              Veh     WinF    WinNF
+## 12              Con      Con      Con
+## 13             Tabl    WinNF    WinNF
+## 14             Head     Head     Head
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-37">
+  <div>
+    <h2>kNN</h2>
+    <pre><code class="r">## calculate the proportion of correct classifications on this one 
+## training set
+
+pcorrn1=100*sum(fgl$type[-train]==nearest1)/(n-nt)
+pcorrn5=100*sum(fgl$type[-train]==nearest5)/(n-nt)
+pcorrn1
+</code></pre>
+
+<pre><code>## [1] 50
+</code></pre>
+
+<pre><code class="r">pcorrn5
+</code></pre>
+
+<pre><code>## [1] 64.28571
+</code></pre>
+
+<pre><code class="r">## Note: Different runs may give you slightly different results as ties 
+## are broken at random
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class04.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>

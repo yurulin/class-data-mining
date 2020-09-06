@@ -57,7 +57,7 @@
 
 .compact p, .compact li, .compact ol, .compact ul {
   font-size: 90%;
-  line-height: 1.1em;
+  line-height: 1em;
 
   /* line wrapping */
     white-space: pre-wrap;       /* css-3 */
@@ -67,14 +67,14 @@
     word-wrap: break-word;       /* Internet Explorer 5.5+ */	
 
   /* smaller margin */
-    margin-top: 1px ;
-    margin-bottom: 1px ;
-    padding-top: 1px ;
-    padding-bottom: 1px ;	
+    margin-top: -6px ;
+    margin-bottom: 0 ;
+    padding-top: 0 ;
+    padding-bottom: 0 ;	
 }
 
 .cc ul, .cc li, .cc ol, .cc p, .cc li ul, .cc ul ul, .cc tr {
-  font-size: 100%;
+  font-size: 90%;
   line-height: 90%;
 
   /* line wrapping */
