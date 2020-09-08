@@ -294,7 +294,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-10">
+<section class="slide sscode" id="slide-10">
   <div>
     <h2>Understand the summary</h2>
       
@@ -337,7 +337,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-11">
+<section class="slide sscode" id="slide-11">
   <div>
     <h2>Understand the summary</h2>
       
@@ -380,7 +380,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-12">
+<section class="slide sscode" id="slide-12">
   <div>
     <h2>Understand the summary</h2>
       
@@ -423,7 +423,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-13">
+<section class="slide sscode" id="slide-13">
   <div>
     <h2>Understand the summary</h2>
       
@@ -466,7 +466,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode compact" id="slide-14">
+<section class="slide sscode compact" id="slide-14">
   <div>
     <h2>Understand the summary</h2>
       
@@ -509,7 +509,7 @@ summary(fit)
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-15">
+<section class="slide sscode" id="slide-15">
   <div>
     <h2>Understand the summary</h2>
       
@@ -573,7 +573,7 @@ plot(density(resid(fit)))
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-17">
+<section class="slide sscode" id="slide-17">
   <div>
     <h2>Understand the summary</h2>
       
@@ -1735,8 +1735,9 @@ ggplot(df0 , aes(x = X, y = Y)) +
       
 <div class='left' style='float:left;width:70%'>
 <pre><code class="r">## split our data into a training set and test set
+set.seed(1)
 n &lt;- length(x)
-indices &lt;- sort(sample(1:n, round (0.5 * n)))
+indices &lt;- sort(sample(1:n, round (0.8 * n)))
 training.x &lt;- x[indices]
 training.y &lt;- y[indices]
 test.x &lt;- x[-indices]
@@ -1879,8 +1880,9 @@ glmnet(poly(x, degree = 2), y)
 ## Lambda: controls how complex the model is (a.k.a. hyperparameter)
 
 ## split it into a training set and a test set
+set.seed(101)
 n &lt;- length(x)
-indices &lt;- sort(sample(1:n, round (0.5 * n)))
+indices &lt;- sort(sample(1:n, round (0.7 * n)))
 training.x &lt;- x[indices]
 training.y &lt;- y[indices]
 test.x &lt;- x[-indices]
@@ -1922,11 +1924,16 @@ ggplot(performance , aes(x = Lambda , y = RMSE)) +
 <section class="slide sscode" id="slide-53">
   <div>
     <h2>Regularization</h2>
-    <pre><code class="r">## we get the best possible performance with Lambda near 0.05; select that value and train our model
-## using only 3 nonzero coefficients instead of 10
-
+    <pre><code class="r">## we get the best possible performance with Lambda near 0.1; select that value and train our model
+## using only few nonzero coefficients instead of 10
 best.lambda &lt;- with(performance , Lambda[which(RMSE == min(RMSE))])
-glmnet.fit &lt;- with(df, glmnet(poly(X, degree = 10), Y))
+best.lambda
+</code></pre>
+
+<pre><code>## [1] 0.125756
+</code></pre>
+
+<pre><code class="r">glmnet.fit &lt;- with(df, glmnet(poly(X, degree = 10), Y))
 ## use coef to examine the structure of our regularized model
 coef(glmnet.fit , s = best.lambda)
 </code></pre>
@@ -1934,11 +1941,11 @@ coef(glmnet.fit , s = best.lambda)
 <pre><code>## 11 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        1
 ## (Intercept) -0.001051649
-## 1           -5.217478304
+## 1           -4.116304432
 ## 2            .          
-## 3            4.162161101
+## 3            3.060987229
 ## 4            .          
-## 5           -0.276378285
+## 5            .          
 ## 6            .          
 ## 7            .          
 ## 8            .          
@@ -1962,11 +1969,11 @@ coef(glmnet.fit , s = best.lambda)
   <div>
     <h2>Local Polynomial Regression</h2>
     <pre><code class="r">library(locfit)
-
-## first we read in the data
-data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
-ethanol &lt;- read.csv(sprintf (&quot;%s/ethanol.csv&quot;,data.url))
-colnames(ethanol) &lt;- c(&#39;NOx&#39;,&#39;C&#39;,&#39;E&#39;)
+data(ethanol)
+# ## you can also read the data from a csv file
+# data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
+# ethanol &lt;- read.csv(sprintf (&quot;%s/ethanol.csv&quot;,data.url))
+# colnames(ethanol) &lt;- c(&#39;NOx&#39;,&#39;C&#39;,&#39;E&#39;)
 ethanol [1:3,]
 </code></pre>
 
@@ -1994,7 +2001,7 @@ ethanol [1:3,]
     <pre><code class="r">## standard regression of NOx on the equivalence ratio dosen&#39;t work
 fitreg=lm(NOx~E,data=ethanol)
 plot(NOx~E,data=ethanol)
-abline(fitreg)
+abline(fitreg, col=&quot;blue&quot;)
 </code></pre>
 
 <p><img src="assets/fig/class03-chunk-55-1.png" title="plot of chunk class03-chunk-55" alt="plot of chunk class03-chunk-55" width="420" /></p>
@@ -2017,7 +2024,7 @@ abline(fitreg)
     <pre><code class="r">## local polynomial regression of NOx on the equivalence ratio
 ## fit with a 50% nearest neighbor bandwidth.
 fit &lt;- locfit(NOx~lp(E,nn=0.5),data=ethanol)
-plot(fit)
+plot(NOx~E,data=ethanol); plot(fit, col=&quot;blue&quot;, add=T)
 </code></pre>
 
 <p><img src="assets/fig/class03-chunk-56-1.png" title="plot of chunk class03-chunk-56" alt="plot of chunk class03-chunk-56" width="336" /></p>
@@ -2034,32 +2041,28 @@ plot(fit)
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-57">
+<section class="slide sscode" id="slide-57">
   <div>
     <h2>Local Polynomial Regression</h2>
-    <pre><code class="r">## cross-validation
-alpha &lt;-seq(0.20,1,by=0.01)
-n1=length(alpha)
-g=matrix(nrow=n1,ncol=4)
-for (k in 1:length(alpha)) {
-  g[k,]&lt;-gcv(NOx~lp(E,nn=alpha[k]),data=ethanol)
-}
-head(g) 
+      
+<div class='left' style='float:left;width:50%'>
+<pre><code class="r">## fit with a 25% nearest neighbor bandwidth.
+fit &lt;- locfit(NOx~lp(E,nn=0.25),data=ethanol)
+plot(NOx~E,data=ethanol); plot(fit, col=&quot;blue&quot;, add=T)
 </code></pre>
 
-<pre><code>##           [,1]     [,2]     [,3]      [,4]
-## [1,] -3.220084 18.81266 16.42649 0.1183932
-## [2,] -3.249601 17.61614 15.43623 0.1154507
-## [3,] -3.319650 16.77004 14.75204 0.1151542
-## [4,] -3.336464 15.44404 13.88921 0.1115457
-## [5,] -3.373011 14.52391 13.11543 0.1099609
-## [6,] -3.408908 13.96789 12.63493 0.1094681
-</code></pre>
-  
-<div class='left' style='float:left;width:100%'>
+<p><img src="assets/fig/class03-chunk-57-1.png" title="plot of chunk class03-chunk-57" alt="plot of chunk class03-chunk-57" width="336" /></p>
 
 </div>    
+<div class='right' style='float:right;width:50%'>
+  <pre><code class="r">## fit with a 75% nearest neighbor bandwidth.
+fit &lt;- locfit(NOx~lp(E,nn=0.75),data=ethanol)
+plot(NOx~E,data=ethanol); plot(fit, col=&quot;blue&quot;, add=T)
+</code></pre>
 
+<p><img src="assets/fig/class03-chunk-58-1.png" title="plot of chunk class03-chunk-58" alt="plot of chunk class03-chunk-58" width="336" /></p>
+
+</div>
 
     <div class = 'foot1'>
       <div class="bottomleft">
@@ -2071,10 +2074,11 @@ head(g)
 <section class="slide scode cc" id="slide-58">
   <div>
     <h2>Local Polynomial Regression</h2>
-    <pre><code class="r">plot(g[,4]~g[,3],ylab=&quot;GCV&quot;,xlab=&quot;degrees of freedom&quot;)
+    <pre><code class="r">## cross-validation using gcvplot
+plot(gcvplot(NOx~E,data=ethanol,alpha=seq(0.2,1.0,by=0.01)))
 </code></pre>
 
-<p><img src="assets/fig/class03-chunk-58-1.png" title="plot of chunk class03-chunk-58" alt="plot of chunk class03-chunk-58" width="420" /></p>
+<p><img src="assets/fig/class03-chunk-59-1.png" title="plot of chunk class03-chunk-59" alt="plot of chunk class03-chunk-59" width="420" /></p>
   
 <div class='left' style='float:left;width:100%'>
 
@@ -2091,25 +2095,63 @@ head(g)
 <section class="slide sscode cc" id="slide-59">
   <div>
     <h2>Local Polynomial Regression</h2>
-    <pre><code class="r">f1=locfit(NOx~lp(E,nn=0.30),data=ethanol)
-f1; plot(f1)
+    <pre><code class="r">## cross-validation (to produce the GCV plot)
+alpha &lt;-seq(0.20,1,by=0.01)
+g=matrix(nrow=length(alpha),ncol=4) ## store the GCV results in a matrix
+for (k in 1:length(alpha)) {
+  g[k,]&lt;-gcv(NOx~lp(E,nn=alpha[k]),data=ethanol)
+}
+plot(g[,4]~g[,3],ylab=&quot;GCV&quot;,xlab=&quot;fitted degrees of freedom&quot;)
 </code></pre>
 
-<pre><code>## Call:
-## locfit(formula = NOx ~ lp(E, nn = 0.3), data = ethanol)
-## 
-## Number of observations:          88 
-## Family:  Gaussian 
-## Fitted Degrees of freedom:       10.517 
-## Residual scale:                  0.306
-</code></pre>
-
-<p><img src="assets/fig/class03-chunk-59-1.png" title="plot of chunk class03-chunk-59" alt="plot of chunk class03-chunk-59" width="378" /></p>
+<p><img src="assets/fig/class03-chunk-60-1.png" title="plot of chunk class03-chunk-60" alt="plot of chunk class03-chunk-60" width="378" /></p>
   
 <div class='left' style='float:left;width:100%'>
 
 </div>    
 
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class03.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-60">
+  <div>
+    <h2>Local Polynomial Regression</h2>
+      
+<div class='left' style='float:left;width:50%'>
+<pre><code class="r">## find the best alpha (nearest neighbor bandwidth)
+best.alpha = alpha[which.min(g[,4])]
+best.alpha 
+</code></pre>
+
+<pre><code>## [1] 0.31
+</code></pre>
+
+<pre><code class="r">f1=locfit(NOx~lp(E,nn=best.alpha),data=ethanol)
+f1
+</code></pre>
+
+<pre><code>## Call:
+## locfit(formula = NOx ~ lp(E, nn = best.alpha), data = ethanol)
+## 
+## Number of observations:          88 
+## Family:  Gaussian 
+## Fitted Degrees of freedom:       10.322 
+## Residual scale:                  0.306
+</code></pre>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <pre><code class="r">plot(NOx~E,data=ethanol); plot(f1, col=&quot;blue&quot;, add=T)
+</code></pre>
+
+<p><img src="assets/fig/class03-chunk-62-1.png" title="plot of chunk class03-chunk-62" alt="plot of chunk class03-chunk-62" width="336" /></p>
+
+</div>
 
     <div class = 'foot1'>
       <div class="bottomleft">
@@ -2144,7 +2186,7 @@ prostate [1:3,]
     </div>
   </div>
 </section>
-<section class="slide scode compact" id="slide-61">
+<section class="slide scode compact" id="slide-62">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">m1=lm(lcavol~.,data=prostate)
@@ -2187,7 +2229,7 @@ summary(m1)
     </div>
   </div>
 </section>
-<section class="slide scode compact" id="slide-62">
+<section class="slide scode compact" id="slide-63">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">## the model.matrix statement defines the model to be fitted
@@ -2221,19 +2263,22 @@ lasso &lt;- lars(x=x,y=prostate$lcavol ,trace=TRUE)
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-63">
+<section class="slide scode compact" id="slide-64">
   <div>
     <h2>LASSO</h2>
-    <pre><code class="r">## trace of lasso (standardized) coefficients for varying penalty
+      
+<div class='left' style='float:left;width:45%'>
+<p>The x-axis is the fraction of L1 norm. Hence, lambda=0 corresponds to a fraction 1.0 (the maximum); as the fraction goes to zero, more variables are &quot;shrunk&quot; by the increase of lambda.</p>
+
+</div>    
+<div class='right' style='float:right;width:50%'>
+  <pre><code class="r">## trace of lasso (standardized) coefficients for varying penalty
 plot(lasso)
 </code></pre>
 
-<p><img src="assets/fig/class03-chunk-63-1.png" title="plot of chunk class03-chunk-63" alt="plot of chunk class03-chunk-63" width="420" /></p>
-  
-<div class='left' style='float:left;width:100%'>
+<p><img src="assets/fig/class03-chunk-66-1.png" title="plot of chunk class03-chunk-66" alt="plot of chunk class03-chunk-66" width="420" /></p>
 
-</div>    
-
+</div>
 
     <div class = 'foot1'>
       <div class="bottomleft">
@@ -2242,7 +2287,7 @@ plot(lasso)
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-64">
+<section class="slide scode cc" id="slide-65">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">lasso
@@ -2267,6 +2312,9 @@ plot(lasso)
 ## [3,] 0.005369985 -0.001402051 0.28821232 0.01136331 0.4827810
 ## [4,] 0.019023772 -0.089182565 0.29727207 0.05239529 0.5395488
 </code></pre>
+
+<pre><code class="r">## s controls the fraction of L1 norm
+</code></pre>
   
 <div class='left' style='float:left;width:100%'>
 
@@ -2280,14 +2328,14 @@ plot(lasso)
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-65">
+<section class="slide scode cc" id="slide-66">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">## cross -validation using 10 folds
 cv.lars(x=x,y=prostate$lcavol ,K=10)
 </code></pre>
 
-<p><img src="assets/fig/class03-chunk-65-1.png" title="plot of chunk class03-chunk-65" alt="plot of chunk class03-chunk-65" width="420" /></p>
+<p><img src="assets/fig/class03-chunk-68-1.png" title="plot of chunk class03-chunk-68" alt="plot of chunk class03-chunk-68" width="420" /></p>
   
 <div class='left' style='float:left;width:100%'>
 
@@ -2301,7 +2349,7 @@ cv.lars(x=x,y=prostate$lcavol ,K=10)
     </div>
   </div>
 </section>
-<section class="slide sscode cc" id="slide-66">
+<section class="slide sscode cc" id="slide-67">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">## another way to evaluate lasso&#39;s out-of-sample prediction performance
@@ -2358,7 +2406,7 @@ mean(MSElasso25)
     </div>
   </div>
 </section>
-<section class="slide sscode cc" id="slide-67">
+<section class="slide sscode cc" id="slide-68">
   <div>
     <h2>LASSO</h2>
     <pre><code class="r">boxplot(MSElasso25 ,MSElasso50 ,MSElasso75 ,MSElasso100 ,
@@ -2366,7 +2414,7 @@ mean(MSElasso25)
         xlab=&quot;s=0.25 s=0.50 s=0.75 s=1.0(LS)&quot;)
 </code></pre>
 
-<p><img src="assets/fig/class03-chunk-67-1.png" title="plot of chunk class03-chunk-67" alt="plot of chunk class03-chunk-67" width="420" /></p>
+<p><img src="assets/fig/class03-chunk-70-1.png" title="plot of chunk class03-chunk-70" alt="plot of chunk class03-chunk-70" width="420" /></p>
   
 <div class='left' style='float:left;width:100%'>
 
