@@ -35,9 +35,15 @@ modname = "index" ## default class module
 .mods <- function() {sprintf("--- &module modname:%s  .scode", modname)}
 .modss <- function() {sprintf("--- &module modname:%s  .sscode", modname)}
 .modsss <- function() {sprintf("--- &module modname:%s  .ssscode", modname)}
+.modsn <- function() {sprintf("--- &module modname:%s  .scode-nowrap", modname)}
+.modssn <- function() {sprintf("--- &module modname:%s  .sscode-nowrap", modname)}
+.modsssn <- function() {sprintf("--- &module modname:%s  .ssscode-nowrap", modname)}
+
 ## use `r .mod2(30,68)` to print the following inline code (two-column slide; add slide index #xxx manually)
 # --- &twocolvar w1:30% w2:68% modname:class01 .code #working-with-data 
 .mod2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .code", modname,w1,w2)}
 .mods2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .scode", modname,w1,w2)}
 .modss2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .sscode", modname,w1,w2)}
+.modsn2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .scode-nowrap", modname,w1,w2)}
+.modssn2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .sscode-nowrap", modname,w1,w2)}
 
