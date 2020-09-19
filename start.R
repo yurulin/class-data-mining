@@ -117,6 +117,10 @@ if (0) {
   if (1) { ## class06
     opts_knit$set(unnamed.chunk.label='class06-chunk')
     slidify("class06.Rmd")
+    
+    opts_knit$set(unnamed.chunk.label='hw3-chunk')
+    slidify("hw3-sample.Rmd")
+    
   }
   
 }

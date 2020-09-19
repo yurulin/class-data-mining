@@ -44,6 +44,7 @@ modname = "index" ## default class module
 .mod2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .code", modname,w1,w2)}
 .mods2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .scode", modname,w1,w2)}
 .modss2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .sscode", modname,w1,w2)}
+.modsss2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .ssscode", modname,w1,w2)}
 .modsn2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .scode-nowrap", modname,w1,w2)}
 .modssn2 <- function(w1=30,w2=68) {sprintf("--- &twocolvar modname:%s w1:%d%% w2:%d%% .sscode-nowrap", modname,w1,w2)}
 
