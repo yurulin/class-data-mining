@@ -43,6 +43,7 @@
 <li><a href="#set-up">Set up</a></li>
 <li><a href="#svm">SVM</a></li>
 <li><a href="#ada">AdaBoost</a></li>
+<li><a href="#more">More goodies</a></li>
 </ul>
 
   </div>
@@ -204,24 +205,24 @@ tuned &lt;- tune.svm(Sex~., data = trainset, gamma = 10^(-6:-1), cost = 10^(1:2)
 ## 
 ## - best parameters:
 ##  gamma cost
-##    0.1   10
+##  0.001  100
 ## 
-## - best performance: 0.1988889 
+## - best performance: 0.2477778 
 ## 
 ## - Detailed performance results:
 ##    gamma cost     error dispersion
-## 1  1e-06   10 0.3355556 0.13362109
-## 2  1e-05   10 0.3355556 0.13362109
-## 3  1e-04   10 0.3355556 0.13362109
-## 4  1e-03   10 0.3355556 0.13362109
-## 5  1e-02   10 0.2611111 0.05695762
-## 6  1e-01   10 0.1988889 0.07934056
-## 7  1e-06  100 0.3355556 0.13362109
-## 8  1e-05  100 0.3355556 0.13362109
-## 9  1e-04  100 0.3355556 0.13362109
-## 10 1e-03  100 0.2611111 0.05695762
-## 11 1e-02  100 0.2311111 0.07216047
-## 12 1e-01  100 0.2000000 0.10747125
+## 1  1e-06   10 0.3444444 0.15913001
+## 2  1e-05   10 0.3444444 0.15913001
+## 3  1e-04   10 0.3444444 0.15913001
+## 4  1e-03   10 0.3555556 0.15342456
+## 5  1e-02   10 0.2700000 0.08182587
+## 6  1e-01   10 0.2700000 0.08182587
+## 7  1e-06  100 0.3444444 0.15913001
+## 8  1e-05  100 0.3444444 0.15913001
+## 9  1e-04  100 0.3555556 0.15342456
+## 10 1e-03  100 0.2477778 0.11829261
+## 11 1e-02  100 0.2600000 0.08383798
+## 12 1e-01  100 0.2800000 0.10288033
 </code></pre>
   
 <div class='left' style='float:left;width:100%'>
@@ -259,11 +260,11 @@ summary(pred)
 ## 
 ## Training Results
 ## 
-## Accuracy: 0.885 Kappa: 0.72 
+## Accuracy: 0.844 Kappa: 0.665 
 ## 
 ## Testing Results
 ## 
-## Accuracy: 0.688 Kappa: 0.259
+## Accuracy: 0.792 Kappa: 0.444
 </code></pre>
   
 <div class='left' style='float:left;width:100%'>
@@ -286,6 +287,88 @@ varplot(pred)
 </code></pre>
 
 <p><img src="assets/fig/class06-chunk-8-1.png" title="plot of chunk class06-chunk-8" alt="plot of chunk class06-chunk-8" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class06.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode compact" id="more">
+  <div>
+    <h2>Where to go from here</h2>
+    <p><a href="https://cran.r-project.org/web/views/MachineLearning.html">(CRAN) Machine Learning &amp; Statistical Learning</a></p>
+
+<ul>
+<li>Tree-based model - Boosting and Gradient Descent
+
+<ul>
+<li><code>gbm</code> (tree-based functional gradient descent boosting)</li>
+<li><code>xgboost</code> (tree-based boosting using efficient trees as base learners for several and also user-defined objective functions)</li>
+</ul></li>
+<li>Neural Networks and Deep Learning
+
+<ul>
+<li><code>nnet</code> (single-hidden-layer neural network; shipped with base R)</li>
+<li><code>deepnet</code> (feed-forward neural network, restricted Boltzmann machine, deep belief network, stacked autoencoders), <code>RcppDL</code> (denoising autoencoder, stacked denoising autoencoder, restricted Boltzmann machine, deep belief network) and <code>h2o</code> (feed-forward neural network, deep autoencoders), <code>tensorflow</code> (interface to tensorflow)</li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class06.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code compact" id="slide-11">
+  <div>
+    <h2>Where to go from here</h2>
+    <ul>
+<li>Regularized and Shrinkage Methods
+
+<ul>
+<li><code>lasso2</code> and <code>lars</code> (regression models with some constraint on the parameter estimates), <code>grplasso</code> (groupwise lasso), <code>elasticnet</code> and <code>glmnet</code> (lasso or elastic-net regularization for linear regression, logistic and multinomial regression models)</li>
+</ul></li>
+<li>Kernel Methods</li>
+<li>Bayesian Methods</li>
+<li>Meta packages
+
+<ul>
+<li><code>caret</code> (miscellaneous functions for building predictive models, including parameter tuning and variable importance measures), <code>h2o</code> (a general purpose machine learning platform that has scalable implementations of many popular algorithms such as random forest, GBM, GLM, etc.)</li>
+</ul></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class06.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code compact" id="slide-12">
+  <div>
+    <h2>Caret tutorials</h2>
+    <ul>
+<li><a href="https://cran.r-project.org/web/packages/caret/vignettes/caret.html">A Short Introduction to the caret Package</a> </li>
+<li><a href="http://topepo.github.io/caret/index.html">The caret Package</a> </li>
+</ul>
   
 <div class='left' style='float:left;width:100%'>
 
