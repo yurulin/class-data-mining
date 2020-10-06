@@ -127,7 +127,8 @@ grpMeat
 ## 
 ## Available components:
 ## 
-## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot; &quot;betweenss&quot;   
+## [7] &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;
 </code></pre>
   
 <div class='left' style='float:left;width:100%'>
@@ -146,6 +147,16 @@ grpMeat
   <div>
     <h2>k-means</h2>
     <p>See <code>?kmeans</code> <a href="https://www.rdocumentation.org/packages/stats/versions/3.5.1/topics/kmeans">help page</a> for <em>totss</em>, <em>withinss</em>, <em>tot.withinss</em>, <em>betweenss</em>, etc.</p>
+
+<p><em>withinss</em>: \[W(C_k)=\sum_{x_i \in C_k} (x_k-\mu_k)^2\]
+where:</p>
+
+<ul>
+<li>\(x_i\) is a data point belonging to the cluster \(C_k\)</li>
+<li>\(\mu_k\) is the mean value (centroid) of the points assigned to the cluster \(C_k\)</li>
+<li>The total within-cluster variation as the sum of squared distances Euclidean distances. </li>
+<li>We expect it to be as low as possible for each cluster, since we would like to have homogeneity within the clusters.</li>
+</ul>
   
 <div class='left' style='float:left;width:100%'>
 
@@ -159,7 +170,54 @@ grpMeat
     </div>
   </div>
 </section>
-<section class="slide sscode" id="slide-6">
+<section class="slide code" id="slide-6">
+  <div>
+    <h2>k-means</h2>
+    <p><em>tot.withinss</em>: \[\sum_k W(C_k)=
+\sum_k \sum_{x_i \in C_k} (x_k-\mu_k)^2\]</p>
+
+<ul>
+<li>The total within-cluster sum of square measures the compactness (i.e goodness) of the clustering and we want it to be as small as possible.</li>
+</ul>
+
+<p><em>totss</em>: \[\sum_{i} (x_i-\mu)^2\]
+where: \(x_i\) is a data point, \(\mu\) is the mean value (centroid) of all points</p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class07.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-7">
+  <div>
+    <h2>k-means</h2>
+    <p><em>betweenss</em> = <em>totss</em>-<em>tot.withinss</em></p>
+
+<ul>
+<li>The between clusters sum of squares is the distances between cluster centers. We expect it to be as higher as possible, since we would like to have heterogenous clusters.</li>
+<li>If we just have 1 cluster, <em>betweenss</em> = 0  and  <em>tot.withinss</em> = <em>withinss</em>  and  <em>totss</em> = <em>tot.withinss</em></li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class07.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-8">
   <div>
     <h2>k-means</h2>
     <pre><code class="r">## list the cluster assignments
@@ -207,7 +265,7 @@ data.frame(food$Country[o],grpMeat$cluster[o])
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-7">
+<section class="slide scode cc" id="slide-9">
   <div>
     <h2>k-means</h2>
     <pre><code class="r">## generate a scatter plot with cluster assignments
@@ -229,7 +287,7 @@ text(x=food$Red, y=food$White, labels=food$Country, col=grpMeat$cluster+1)
     </div>
   </div>
 </section>
-<section class="slide sscode" id="slide-8">
+<section class="slide sscode" id="slide-10">
   <div>
     <h2>k-means</h2>
     <pre><code class="r">## same analysis, but now with clustering on all nine features;
@@ -280,7 +338,7 @@ data.frame(food$Country[o],grpProtein$cluster[o])
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-9">
+<section class="slide scode cc" id="slide-11">
   <div>
     <h2>k-means</h2>
     <pre><code class="r">## generate a scatter plot for the new result
@@ -333,7 +391,7 @@ food[1:3,] ## take a look at the first three rows
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-11">
+<section class="slide scode" id="slide-13">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">## consider just Red and White meat clusters;
@@ -372,7 +430,7 @@ food2agg
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-12">
+<section class="slide scode cc" id="slide-14">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">plot(food2agg, which.plots=2) ## dendrogram
@@ -392,7 +450,7 @@ food2agg
     </div>
   </div>
 </section>
-<section class="slide sscode" id="slide-13">
+<section class="slide sscode" id="slide-15">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">food2agg$merge  ## describes the sequential merge steps
@@ -437,7 +495,7 @@ food2agg
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-14">
+<section class="slide scode cc" id="slide-16">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">## identical result obtained by first computing the distance matrix
@@ -459,7 +517,7 @@ plot(food2aggv, which.plots=2)
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-15">
+<section class="slide scode cc" id="slide-17">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">## use all nine features with Euclidean distance and average linkage
@@ -481,7 +539,7 @@ plot(foodagg, which.plots=2)  ## dendrogram
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-16">
+<section class="slide scode cc" id="slide-18">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r"># foodagg$merge  ## describes the sequential merge steps
@@ -506,7 +564,7 @@ plot(foodaggsin, which.plots=2) ## dendrogram
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-17">
+<section class="slide scode cc" id="slide-19">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r"># foodaggsin$merge  ## describes the sequential merge steps
@@ -530,7 +588,7 @@ plot(foodaggcomp, which.plots=2)    ## dendrogram
     </div>
   </div>
 </section>
-<section class="slide ssscode" id="slide-18">
+<section class="slide ssscode" id="slide-20">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r"># foodaggcomp$merge ## describes the sequential merge steps
@@ -541,32 +599,32 @@ hc = hclust(data.dist,method=&#39;complete&#39;)
 data.dist
 </code></pre>
 
-<pre><code>##            1         2         3         4         5         6         7         8         9        10        11        12        13        14        15
-## 2  23.176281                                                                                                                                            
-## 3  21.650173  7.868291                                                                                                                                  
-## 4  15.688212 32.304489 32.786125                                                                                                                        
-## 5  15.154537 10.305338 10.609901 24.005416                                                                                                              
-## 6  30.157586 11.956588 11.119802 40.334105 19.420608                                                                                                    
-## 7  22.865913 10.742905  8.928606 33.614729 10.613670 15.184532                                                                                          
-## 8  30.990966 17.421251 17.603125 40.335096 24.019992 12.249898 23.827505                                                                                
-## 9  23.174124 11.010904  6.007495 33.263494 13.435029 12.718490 13.855324 18.181309                                                                      
-## 10 12.136309 19.529721 18.254862 19.315538 15.025645 24.466099 22.109274 24.107053 18.254588                                                            
-## 11 13.157127 16.974982 18.784036 18.399185  9.179869 26.734809 17.517991 29.983829 21.256293 14.933185                                                  
-## 12 27.902509 10.039422  9.146584 38.359745 17.582093  8.938121 16.177763 11.569356 10.153325 22.976510 25.019193                                        
-## 13 10.624500 14.688771 13.568714 21.013329  8.705171 21.595833 15.622740 23.755420 15.157836  7.976841 10.702803 20.037215                              
-## 14 28.302120  6.763875  9.675743 38.526744 16.352676  8.360024 13.268760 14.677534 12.350304 24.062834 23.208619  6.827884 19.872343                    
-## 15 26.805410 13.684663 10.803703 38.174730 18.727253  6.688049 14.985326 11.688028 13.150285 21.419617 25.669437 10.883014 18.766726 11.551623          
-## 16 17.643979  9.942334 12.201639 24.493877  8.255301 17.813759 14.874811 19.358977 14.013208 12.358803 11.992498 16.008748  9.066973 15.336884 16.913308
-## 17 23.111036 22.931201 19.200781 33.293843 19.060430 23.926972 15.156187 31.176273 21.854061 22.156489 22.031568 27.137612 17.866169 25.384838 20.662768
-## 18 10.319399 25.261235 25.878563  8.334867 17.311557 33.292191 26.731629 33.398054 27.116969 13.341664 11.638728 31.295687 14.311184 31.244840 31.020638
-## 19 17.149927 17.440183 13.916537 28.887367 13.070578 21.187732 11.784312 26.571413 17.215110 16.268682 16.165704 21.806192 10.910545 20.661317 17.575836
-## 20 29.987998 13.032268 11.632283 41.480598 20.430370  4.795832 15.584287 11.908820 14.027117 25.157305 27.655198  8.884256 21.877386  8.497647  5.557877
-## 21 24.928899  7.583535  7.525955 35.509013 14.971640  9.650389 14.647184 13.054118  8.182298 20.039960 22.139557  5.097058 16.668833  6.297619 10.653638
-## 22 24.308435 12.920526  6.830081 36.419500 16.497273 11.740528 14.780054 15.951176  6.987131 20.320187 24.172091  8.241966 17.261518 11.987076 10.523783
-## 23 11.034038 19.042846 18.416840 16.675431 12.635268 25.334759 21.369137 24.692711 19.434248  8.175573 12.493198 23.017385  9.462029 24.233448 22.826301
-## 24 29.143953 10.131634  9.066422 40.619823 17.151385  9.901010 10.558409 18.878824 12.459936 26.280411 24.701012  9.709789 21.096682  6.525335 12.152366
-## 25 15.474818 31.946987 32.684859  4.875449 23.977698 39.874177 33.279423 39.330014 33.723137 18.747800 17.615902 37.953919 20.721245 37.969725 37.451569
-##           16        17        18        19        20        21        22        23        24
+<pre><code>##            1         2         3         4         5         6         7         8         9
+## 2  23.176281                                                                                
+## 3  21.650173  7.868291                                                                      
+## 4  15.688212 32.304489 32.786125                                                            
+## 5  15.154537 10.305338 10.609901 24.005416                                                  
+## 6  30.157586 11.956588 11.119802 40.334105 19.420608                                        
+## 7  22.865913 10.742905  8.928606 33.614729 10.613670 15.184532                              
+## 8  30.990966 17.421251 17.603125 40.335096 24.019992 12.249898 23.827505                    
+## 9  23.174124 11.010904  6.007495 33.263494 13.435029 12.718490 13.855324 18.181309          
+## 10 12.136309 19.529721 18.254862 19.315538 15.025645 24.466099 22.109274 24.107053 18.254588
+## 11 13.157127 16.974982 18.784036 18.399185  9.179869 26.734809 17.517991 29.983829 21.256293
+## 12 27.902509 10.039422  9.146584 38.359745 17.582093  8.938121 16.177763 11.569356 10.153325
+## 13 10.624500 14.688771 13.568714 21.013329  8.705171 21.595833 15.622740 23.755420 15.157836
+## 14 28.302120  6.763875  9.675743 38.526744 16.352676  8.360024 13.268760 14.677534 12.350304
+## 15 26.805410 13.684663 10.803703 38.174730 18.727253  6.688049 14.985326 11.688028 13.150285
+## 16 17.643979  9.942334 12.201639 24.493877  8.255301 17.813759 14.874811 19.358977 14.013208
+## 17 23.111036 22.931201 19.200781 33.293843 19.060430 23.926972 15.156187 31.176273 21.854061
+## 18 10.319399 25.261235 25.878563  8.334867 17.311557 33.292191 26.731629 33.398054 27.116969
+## 19 17.149927 17.440183 13.916537 28.887367 13.070578 21.187732 11.784312 26.571413 17.215110
+## 20 29.987998 13.032268 11.632283 41.480598 20.430370  4.795832 15.584287 11.908820 14.027117
+## 21 24.928899  7.583535  7.525955 35.509013 14.971640  9.650389 14.647184 13.054118  8.182298
+## 22 24.308435 12.920526  6.830081 36.419500 16.497273 11.740528 14.780054 15.951176  6.987131
+## 23 11.034038 19.042846 18.416840 16.675431 12.635268 25.334759 21.369137 24.692711 19.434248
+## 24 29.143953 10.131634  9.066422 40.619823 17.151385  9.901010 10.558409 18.878824 12.459936
+## 25 15.474818 31.946987 32.684859  4.875449 23.977698 39.874177 33.279423 39.330014 33.723137
+##           10        11        12        13        14        15        16        17        18
 ## 2                                                                                           
 ## 3                                                                                           
 ## 4                                                                                           
@@ -576,21 +634,46 @@ data.dist
 ## 8                                                                                           
 ## 9                                                                                           
 ## 10                                                                                          
-## 11                                                                                          
-## 12                                                                                          
-## 13                                                                                          
-## 14                                                                                          
-## 15                                                                                          
-## 16                                                                                          
-## 17 21.676946                                                                                
-## 18 17.429859 27.650859                                                                      
-## 19 15.496774  8.788629 22.286094                                                            
-## 20 19.150196 24.082774 34.196052 20.789420                                                  
-## 21 13.500370 24.844516 28.574464 19.311396  9.537819                                        
-## 22 17.070735 22.770156 29.726924 17.655028 10.903211  7.969316                              
-## 23 10.812955 24.005208  9.880283 17.884910 26.293155 20.975700 21.605786                    
-## 24 18.513239 22.834842 33.438600 19.048097  9.090105  9.624968 11.101802 26.583454          
-## 25 23.728464 32.829408  6.910861 28.132721 40.833932 35.278889 36.405906 15.791770 40.275551
+## 11 14.933185                                                                                
+## 12 22.976510 25.019193                                                                      
+## 13  7.976841 10.702803 20.037215                                                            
+## 14 24.062834 23.208619  6.827884 19.872343                                                  
+## 15 21.419617 25.669437 10.883014 18.766726 11.551623                                        
+## 16 12.358803 11.992498 16.008748  9.066973 15.336884 16.913308                              
+## 17 22.156489 22.031568 27.137612 17.866169 25.384838 20.662768 21.676946                    
+## 18 13.341664 11.638728 31.295687 14.311184 31.244840 31.020638 17.429859 27.650859          
+## 19 16.268682 16.165704 21.806192 10.910545 20.661317 17.575836 15.496774  8.788629 22.286094
+## 20 25.157305 27.655198  8.884256 21.877386  8.497647  5.557877 19.150196 24.082774 34.196052
+## 21 20.039960 22.139557  5.097058 16.668833  6.297619 10.653638 13.500370 24.844516 28.574464
+## 22 20.320187 24.172091  8.241966 17.261518 11.987076 10.523783 17.070735 22.770156 29.726924
+## 23  8.175573 12.493198 23.017385  9.462029 24.233448 22.826301 10.812955 24.005208  9.880283
+## 24 26.280411 24.701012  9.709789 21.096682  6.525335 12.152366 18.513239 22.834842 33.438600
+## 25 18.747800 17.615902 37.953919 20.721245 37.969725 37.451569 23.728464 32.829408  6.910861
+##           19        20        21        22        23        24
+## 2                                                             
+## 3                                                             
+## 4                                                             
+## 5                                                             
+## 6                                                             
+## 7                                                             
+## 8                                                             
+## 9                                                             
+## 10                                                            
+## 11                                                            
+## 12                                                            
+## 13                                                            
+## 14                                                            
+## 15                                                            
+## 16                                                            
+## 17                                                            
+## 18                                                            
+## 19                                                            
+## 20 20.789420                                                  
+## 21 19.311396  9.537819                                        
+## 22 17.655028 10.903211  7.969316                              
+## 23 17.884910 26.293155 20.975700 21.605786                    
+## 24 19.048097  9.090105  9.624968 11.101802 26.583454          
+## 25 28.132721 40.833932 35.278889 36.405906 15.791770 40.275551
 </code></pre>
   
 <div class='left' style='float:left;width:100%'>
@@ -605,7 +688,7 @@ data.dist
     </div>
   </div>
 </section>
-<section class="slide scode cc" id="slide-19">
+<section class="slide scode cc" id="slide-21">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">plot(hc)
@@ -625,7 +708,7 @@ data.dist
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-20">
+<section class="slide scode" id="slide-22">
   <div>
     <h2>Hierarchical clustering</h2>
     <pre><code class="r">hc1 = cutree(hc,k=3)
@@ -683,7 +766,7 @@ cluster.entropy &lt;- function(clusters,classes) {
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-22">
+<section class="slide scode" id="slide-24">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">## test the purity and entropy functions
@@ -707,7 +790,7 @@ classes
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-23">
+<section class="slide scode" id="slide-25">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">clusters = sample(2, n, replace=T) ## randomly assign clusters
@@ -729,7 +812,7 @@ clusters
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-24">
+<section class="slide scode" id="slide-26">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">table(classes, clusters) ## confusion matrix
@@ -754,7 +837,7 @@ clusters
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-25">
+<section class="slide scode" id="slide-27">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">cluster.purity(clusters,classes)  ## purity
@@ -775,7 +858,7 @@ clusters
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-26">
+<section class="slide scode" id="slide-28">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">cluster.entropy(clusters,classes) ## entropy
@@ -796,7 +879,7 @@ clusters
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-27">
+<section class="slide scode" id="slide-29">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">data.url = &#39;http://www.yurulin.com/class/spring2014_datamining/data/data_text&#39;
@@ -825,7 +908,7 @@ wssplot &lt;- function(data, nc=15, seed=1234) {
     </div>
   </div>
 </section>
-<section class="slide scode" id="slide-28">
+<section class="slide scode" id="slide-30">
   <div>
     <h2>Clustering evaluation</h2>
     <pre><code class="r">n.clusters = 15
