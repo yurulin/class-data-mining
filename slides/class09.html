@@ -1,0 +1,804 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 09</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 09">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 09</h1>
+	</header>
+  <section class="slide " id="toc">
+  <div>
+    <h2>Class 09</h2>
+    <ul>
+<li><a href="#set-up">Set up</a></li>
+<li><a href="#text">Text processing</a></li>
+<li><a href="#lsa">LSA</a></li>
+<li><a href="#lda">LDA</a></li>
+<li><a href="#nmf">NMF</a></li>
+<li><a href="#textclassify">Text classification</a></li>
+</ul>
+
+  </div>
+</section>
+<section class="slide code" id="set-up">
+  <div>
+    <h2>Install R packages</h2>
+    <pre><code class="r">## this tutorial uses the following packages
+install.packages(&#39;lsa&#39;)
+install.packages(&#39;NMF&#39;)
+## note: this package has a dependency on `Biobase` package (requires R ≥ 4.0.0); if you&#39;re R version is &lt; 4.0.0, you will need to install the package manually depending on your R version
+## see http://www.bioconductor.org/packages/release/bioc/html/Biobase.html
+## e.g., for R version 3.6.3
+# if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))
+#     install.packages(&quot;BiocManager&quot;)
+# BiocManager::install(&quot;Biobase&quot;, version = &quot;3.10&quot;)
+
+install.packages(&#39;scatterplot3d&#39;)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode compact" id="text">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">## load libraries
+library(tm)
+library(lsa)
+library(ggplot2)
+
+## prepare a toy example with 9 documents in three topics: big data, global warming, government shutdown
+text = c(
+  &quot;With all the buzz surrounding big data, the data management practitioner is constantly inundated with information regarding big data technologies.&quot;,
+  &quot;We create so much data every day that 90 percent of the information in the world today has been created in the last two years alone, according to IBM.&quot;,
+  &quot;Random algorithms and probabilistic data structures are algorithmically efficient and can provide shockingly good practical results.&quot;,
+  &quot;Scientists will issue their starkest warning yet about the mounting dangers of global warming.&quot;,
+  &quot;Scientists are more certain than ever that humans are causing the majority of climate change, a major new report has shown.&quot;,
+  &quot;There&#39;s a consensus among leading scientists that global warming is caused by human activity.&quot;,
+  &quot;The mood in financial markets was cautious on Monday as the partial shut-down of the American government entered a seventh day and lawmakers appeared to be making little headway in raising the country&#39;s debt ceiling.&quot;,
+  &quot;President Obama must continue to refuse to negotiate policy while the government is shut down. &quot;,
+  &quot;The stock market is closing at its lowest level in a month as the U.S. government enters a second week of being partially shut down.&quot;
+)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-4">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">## give the topic labels
+topic = factor(rep(c(&quot;big data&quot;, &quot;global warming&quot;, &quot;gov shutdown&quot;), each = 3))
+df = data.frame(text, topic, stringsAsFactors = FALSE)
+df[1:3,]
+</code></pre>
+
+<pre><code>##                                                                                                                                                     text
+## 1     With all the buzz surrounding big data, the data management practitioner is constantly inundated with information regarding big data technologies.
+## 2 We create so much data every day that 90 percent of the information in the world today has been created in the last two years alone, according to IBM.
+## 3                   Random algorithms and probabilistic data structures are algorithmically efficient and can provide shockingly good practical results.
+##      topic
+## 1 big data
+## 2 big data
+## 3 big data
+</code></pre>
+
+<pre><code class="r">dim(df)
+</code></pre>
+
+<pre><code>## [1] 9 2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-5">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">## prepare corpus
+corpus = Corpus(VectorSource(df$text))
+corpus = tm_map(corpus, tolower) ## convert text to lower case
+inspect(corpus[1:3])  
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 3
+## 
+## [1] with all the buzz surrounding big data, the data management practitioner is constantly inundated with information regarding big data technologies.    
+## [2] we create so much data every day that 90 percent of the information in the world today has been created in the last two years alone, according to ibm.
+## [3] random algorithms and probabilistic data structures are algorithmically efficient and can provide shockingly good practical results.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-6">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">corpus = tm_map(corpus, removePunctuation) ## remove punctuations
+inspect(corpus[1:3]) 
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 3
+## 
+## [1] with all the buzz surrounding big data the data management practitioner is constantly inundated with information regarding big data technologies    
+## [2] we create so much data every day that 90 percent of the information in the world today has been created in the last two years alone according to ibm
+## [3] random algorithms and probabilistic data structures are algorithmically efficient and can provide shockingly good practical results
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-7">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">corpus = tm_map(corpus, removeNumbers) ## remove numbers
+inspect(corpus[1:3]) 
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 3
+## 
+## [1] with all the buzz surrounding big data the data management practitioner is constantly inundated with information regarding big data technologies  
+## [2] we create so much data every day that  percent of the information in the world today has been created in the last two years alone according to ibm
+## [3] random algorithms and probabilistic data structures are algorithmically efficient and can provide shockingly good practical results
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-8">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">corpus = tm_map(corpus, function(x) removeWords(x, stopwords(&quot;english&quot;))) ## remove stopwords
+inspect(corpus[1:3]) 
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 3
+## 
+## [1]    buzz surrounding big data  data management practitioner  constantly inundated  information regarding big data technologies
+## [2]  create  much data every day   percent   information   world today   created   last two years alone according  ibm           
+## [3] random algorithms  probabilistic data structures  algorithmically efficient  can provide shockingly good practical results
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-9">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">corpus = tm_map(corpus, stemDocument, language = &quot;english&quot;) ## stemming
+inspect(corpus[1:3])
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 3
+## 
+## [1] buzz surround big data data manag practition constant inund inform regard big data technolog    
+## [2] creat much data everi day percent inform world today creat last two year alon accord ibm        
+## [3] random algorithm probabilist data structur algorithm effici can provid shock good practic result
+</code></pre>
+
+<pre><code class="r">corpus  # check corpus
+</code></pre>
+
+<pre><code>## &lt;&lt;SimpleCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 0
+## Content:  documents: 9
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-10">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">td.mat = as.matrix(TermDocumentMatrix(corpus))
+td.mat[1:3,]
+</code></pre>
+
+<pre><code>##           Docs
+## Terms      1 2 3 4 5 6 7 8 9
+##   big      2 0 0 0 0 0 0 0 0
+##   buzz     1 0 0 0 0 0 0 0 0
+##   constant 1 0 0 0 0 0 0 0 0
+</code></pre>
+
+<pre><code class="r">dim(td.mat) ## dimension of term-doc matrix
+</code></pre>
+
+<pre><code>## [1] 95  9
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-11">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">dist.mat = dist(t(as.matrix(td.mat))) ## compute distance matrix
+dist.mat  ## check distance matrix
+</code></pre>
+
+<pre><code>##          1        2        3        4        5        6        7        8
+## 2 5.656854                                                               
+## 3 5.567764 5.567764                                                      
+## 4 5.656854 5.291503 5.000000                                             
+## 5 6.000000 5.656854 5.385165 4.690416                                    
+## 6 5.656854 5.291503 5.000000 3.741657 4.242641                           
+## 7 6.557439 6.082763 6.000000 5.567764 5.916080 5.567764                  
+## 8 5.567764 5.196152 4.898979 4.358899 4.795832 4.358899 5.291503         
+## 9 5.830952 5.477226 5.196152 4.690416 5.099020 4.690416 5.000000 4.123106
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-12">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">## generate mds plot
+doc.mds = cmdscale(dist.mat, k = 2)
+data = data.frame(x = doc.mds[, 1], y = doc.mds[, 2], topic = df$topic, id = row.names(df))
+ggplot(data, aes(x = x, y = y, color=topic)) + 
+  geom_point() + geom_text(aes(x = x, y = y - 0.2, label = id))
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-11-1.png" title="plot of chunk class09-chunk-11" alt="plot of chunk class09-chunk-11" width="504" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-13">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">td.mat.w = lw_tf(td.mat) * gw_idf(td.mat)  ## tf-idf weighting
+dist.mat = dist(t(as.matrix(td.mat.w))) ## compute distance matrix
+
+## generate mds plot using new distance matrix
+doc.mds = cmdscale(dist.mat, k = 2)
+data = data.frame(x = doc.mds[, 1], y = doc.mds[, 2], topic = df$topic, id = row.names(df))
+ggplot(data, aes(x = x, y = y, color=topic)) + 
+  geom_point() + geom_text(aes(x = x, y = y - 0.2, label = id))
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-12-1.png" title="plot of chunk class09-chunk-12" alt="plot of chunk class09-chunk-12" width="504" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-14">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">## generate wordcloud
+library(wordcloud)
+m = as.matrix(td.mat)
+## calculate the frequency of words
+v = sort(rowSums(m), decreasing=TRUE) 
+words = names(v)
+wc = data.frame(word=words, freq=v)
+wc[1:3,]
+</code></pre>
+
+<pre><code>##                word freq
+## data           data    5
+## scientist scientist    3
+## govern       govern    3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-15">
+  <div>
+    <h2>Text processing</h2>
+    <pre><code class="r">wordcloud(wc$word, wc$freq, min.freq=2)
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-14-1.png" title="plot of chunk class09-chunk-14" alt="plot of chunk class09-chunk-14" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="lsa">
+  <div>
+    <h2>LSA</h2>
+    <pre><code class="r">## compute svd (do lsa manually)
+k = 3
+S = svd(as.matrix(td.mat.w),nu=k,nv=k)
+u = S$u; s = S$d; v = S$v
+td.mat.svd = S$u %*% diag(S$d[1:k]) %*% t(S$v) ## X ~ U * S * V^t
+dist.mat = dist(t(td.mat.svd))
+doc.mds = cmdscale(dist.mat, k = 2)
+data = data.frame(x = doc.mds[, 1], y = doc.mds[, 2], topic = df$topic, id = row.names(df))
+ggplot(data, aes(x = x, y = y, color=topic)) + 
+  geom_point() + geom_text(aes(x = x, y = y - 0.2, label = id))
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-15-1.png" title="plot of chunk class09-chunk-15" alt="plot of chunk class09-chunk-15" width="504" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-17">
+  <div>
+    <h2>LSA</h2>
+    <pre><code class="r">## run mds by lsa package
+lsa.space = lsa(td.mat.w,dims=3)  ## create LSA space
+dist.mat = dist(t(as.textmatrix(lsa.space)))  ## compute distance matrix
+dist.mat  ## check distance mantrix
+</code></pre>
+
+<pre><code>##              1            2            3            4            5            6            7            8
+## 2 1.880226e+01                                                                                           
+## 3 7.275635e+00 2.125116e+01                                                                              
+## 4 1.426830e+01 1.655290e+01 1.005893e+01                                                                 
+## 5 1.426830e+01 1.655290e+01 1.005893e+01 1.783840e-14                                                    
+## 6 1.426830e+01 1.655290e+01 1.005893e+01 1.441393e-14 3.562600e-15                                       
+## 7 2.293723e+01 2.379318e+01 2.022884e+01 1.778350e+01 1.778350e+01 1.778350e+01                          
+## 8 1.431204e+01 1.663369e+01 1.003659e+01 9.631855e-01 9.631855e-01 9.631855e-01 1.682537e+01             
+## 9 1.489724e+01 1.718917e+01 1.063050e+01 4.079201e+00 4.079201e+00 4.079201e+00 1.372079e+01 3.116292e+00
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode cc" id="slide-18">
+  <div>
+    <h2>LSA</h2>
+    <pre><code class="r">doc.mds = cmdscale(dist.mat, k = 2)
+data = data.frame(x = doc.mds[, 1], y = doc.mds[, 2], topic = df$topic, id = row.names(df))
+ggplot(data, aes(x = x, y = y, color=topic)) + 
+  geom_point() + geom_text(aes(x = x, y = y - 0.2, label = id))
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-17-1.png" title="plot of chunk class09-chunk-17" alt="plot of chunk class09-chunk-17" width="504" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-19">
+  <div>
+    <h2>LSA</h2>
+    <pre><code class="r">## generate 3d plot
+library(scatterplot3d)
+doc.mds = cmdscale(dist.mat, k = 3)
+colors = rep(c(&quot;blue&quot;, &quot;green&quot;, &quot;red&quot;), each = 3)
+scatterplot3d(doc.mds[, 1], doc.mds[, 2], doc.mds[, 3], color = colors, 
+              pch = 16, main = &quot;Semantic Space Scaled to 3D&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;, 
+              zlab = &quot;z&quot;, type = &quot;h&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-18-1.png" title="plot of chunk class09-chunk-18" alt="plot of chunk class09-chunk-18" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="lda">
+  <div>
+    <h2>LDA</h2>
+    <pre><code class="r">## run LDA topic model
+library(topicmodels)
+lda = LDA(t(td.mat), 3)
+terms(lda)
+</code></pre>
+
+<pre><code>##     Topic 1     Topic 2     Topic 3 
+##     &quot;creat&quot;      &quot;data&quot; &quot;algorithm&quot;
+</code></pre>
+
+<pre><code class="r">topics(lda)
+</code></pre>
+
+<pre><code>## 1 2 3 4 5 6 7 8 9 
+## 2 1 3 2 2 3 1 2 3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-21">
+  <div>
+    <h2>LDA</h2>
+    <pre><code class="r">terms &lt;- as.data.frame(t(posterior(lda)$terms))
+head(terms)
+</code></pre>
+
+<pre><code>##                     1          2            3
+## big      2.315994e-73 0.04444444 2.448337e-73
+## buzz     2.315994e-73 0.02222222 2.448337e-73
+## constant 2.315994e-73 0.02222222 2.448337e-73
+## data     2.702703e-02 0.06666667 2.857143e-02
+## inform   2.702703e-02 0.02222222 3.720076e-44
+## inund    2.315994e-73 0.02222222 2.448337e-73
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-22">
+  <div>
+    <h2>LDA</h2>
+    <pre><code class="r">topics &lt;- as.data.frame(t(posterior(lda)$topics))
+head(topics)
+</code></pre>
+
+<pre><code>##           1            2           3          4           5          6            7           8           9
+## 1 0.0010585 0.9981468893 0.001139645 0.00148002 0.001234263 0.00148002 0.9985871711 0.001643656 0.001234263
+## 2 0.9978830 0.0009265553 0.001139645 0.99703996 0.997531473 0.00148002 0.0007064144 0.996712688 0.001234263
+## 3 0.0010585 0.0009265553 0.997720710 0.00148002 0.001234263 0.99703996 0.0007064144 0.001643656 0.997531473
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="nmf">
+  <div>
+    <h2>NMF</h2>
+    <pre><code class="r">## run NMF
+library(NMF)
+# V ~ WH&#39; 
+# V is an n x p matrix
+# W = n x r  term feature matrix
+# H = r x p  doc feature matrix
+set.seed(123456)
+res = nmf(td.mat, 3,&quot;lee&quot;) # lee &amp; seung method
+V.hat = fitted(res) 
+dim(V.hat) ## estimated target matrix
+</code></pre>
+
+<pre><code>## [1] 95  9
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-24">
+  <div>
+    <h2>NMF</h2>
+    <pre><code class="r">w = basis(res) ##  W  term feature matrix matrix
+dim(w) # n x r (n=95, r=3)
+</code></pre>
+
+<pre><code>## [1] 95  3
+</code></pre>
+
+<pre><code class="r">h = coef(res) ## H  doc feature matrix
+dim(h) #  r x p (r=3, p=9)
+</code></pre>
+
+<pre><code>## [1] 3 9
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-25">
+  <div>
+    <h2>NMF</h2>
+    <pre><code class="r">doc2 = data.frame(t(h))
+features = cbind(doc2$X1,doc2$X2,doc2$X3)
+scatterplot3d(features[, 1], features[, 2], features[, 3], color = colors, 
+              pch = 16, main = &quot;Semantic Space Scaled to 3D&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;, 
+              zlab = &quot;z&quot;, type = &quot;h&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class09-chunk-24-1.png" title="plot of chunk class09-chunk-24" alt="plot of chunk class09-chunk-24" width="336" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="textclassify">
+  <div>
+    <h2>Text classification &amp; further resources</h2>
+    <ul>
+<li>There are other R packages for text mining. For example, <a href="http://www.rtexttools.com/documentation.html">RTextTools</a> has largely been used for topic classification.</li>
+</ul>
+
+<h3>Further resources for texting mining:</h3>
+
+<ul>
+<li><a href="https://www.tidytextmining.com/">Text Mining with R: A Tidy Approach</a> by Julia Silge and David Robinson</li>
+<li><a href="https://m-clark.github.io/text-analysis-with-R/">An Introduction to Text Processing and Analysis with R</a> by Michael Clark</li>
+</ul>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class09.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>
