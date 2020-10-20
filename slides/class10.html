@@ -1,0 +1,1613 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 10</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 10">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 10</h1>
+	</header>
+  <section class="slide " id="toc">
+  <div>
+    <h2>Class 10</h2>
+    <ul>
+<li><a href="#set-up">Set up</a></li>
+<li><a href="#rep">network representation</a></li>
+<li><a href="#cen">network centrality</a></li>
+<li><a href="#layout">network layout</a></li>
+<li><a href="#comm">network community</a></li>
+<li><a href="#attr">graph with attributes</a></li>
+</ul>
+
+  </div>
+</section>
+<section class="slide code" id="set-up">
+  <div>
+    <h2>Install R packages</h2>
+    <pre><code class="r">## this tutorial uses the following packages
+install.packages(&#39;igraph&#39;)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="rep">
+  <div>
+    <h2>network representation</h2>
+    <ul>
+<li>Network mining using igraph</li>
+<li>adjacency matrices and adjacency lists</li>
+<li>directed and undirected networks</li>
+</ul>
+
+<pre><code class="r">library(igraph)
+
+## create a toy matrix
+m = matrix(nrow=3,ncol=3)
+m[1,1]=0
+m[1,2]=1
+m[1,3]=1
+m[2,1]=1
+m[2,2]=0
+m[2,3]=0
+m[3,1]=0
+m[3,2]=1
+m[3,3]=0
+m
+</code></pre>
+
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    0    1    1
+## [2,]    1    0    0
+## [3,]    0    1    0
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-4">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">lab = c(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) ## label nodes as &#39;a&#39;,&#39;b&#39;,&#39;c&#39;
+## create directed graph from the toy matrix
+g = graph.adjacency(m,mode=&quot;directed&quot;) 
+g
+</code></pre>
+
+<pre><code>## IGRAPH 02c8546 D--- 3 4 -- 
+## + edges from 02c8546:
+## [1] 1-&gt;2 1-&gt;3 2-&gt;1 3-&gt;2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-5">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">set.seed(1) ## reset random seed before drawing
+plot(g,vertex.label=lab,edge.color=&#39;black&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-4-1.png" title="plot of chunk class10-chunk-4" alt="plot of chunk class10-chunk-4" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-6">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">adj = get.adjacency(g)
+adj
+</code></pre>
+
+<pre><code>## 3 x 3 sparse Matrix of class &quot;dgCMatrix&quot;
+##           
+## [1,] . 1 1
+## [2,] 1 . .
+## [3,] . 1 .
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-7">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">el = get.edgelist(g)
+el
+</code></pre>
+
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    1    3
+## [3,]    2    1
+## [4,]    3    2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-8">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">degree(g)
+</code></pre>
+
+<pre><code>## [1] 3 3 2
+</code></pre>
+
+<pre><code class="r">degree(g, mode=&quot;in&quot;)
+</code></pre>
+
+<pre><code>## [1] 1 2 1
+</code></pre>
+
+<pre><code class="r">degree(g, mode=&quot;out&quot;)
+</code></pre>
+
+<pre><code>## [1] 2 1 1
+</code></pre>
+
+<pre><code class="r">colSums(m) ## in-degree
+</code></pre>
+
+<pre><code>## [1] 1 2 1
+</code></pre>
+
+<pre><code class="r">rowSums(m) ## out-degree
+</code></pre>
+
+<pre><code>## [1] 2 1 1
+</code></pre>
+
+  </div>
+</section>
+<section class="slide scode" id="slide-9">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">## how far apart?
+shortest.paths(g, mode=&#39;out&#39;)
+</code></pre>
+
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    0    1    1
+## [2,]    1    0    2
+## [3,]    2    1    0
+</code></pre>
+
+<pre><code class="r">diameter(g)
+</code></pre>
+
+<pre><code>## [1] 2
+</code></pre>
+
+<pre><code class="r">average.path.length(g,directed=T) ## 8/6
+</code></pre>
+
+<pre><code>## [1] 1.333333
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-10">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">## how dense are they?
+graph.density(g) ## 4/6
+</code></pre>
+
+<pre><code>## [1] 0.6666667
+</code></pre>
+
+<pre><code class="r">## connected components of a graph
+clusters(g)
+</code></pre>
+
+<pre><code>## $membership
+## [1] 1 1 1
+## 
+## $csize
+## [1] 3
+## 
+## $no
+## [1] 1
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-11">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">## create undirected graph from the same matrix
+g = graph.adjacency(m,mode=&quot;undirected&quot;) 
+g
+</code></pre>
+
+<pre><code>## IGRAPH 9b3eb0b U--- 3 3 -- 
+## + edges from 9b3eb0b:
+## [1] 1--2 1--3 2--3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-12">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">set.seed(1)
+plot(g,vertex.label=lab,edge.color=&#39;black&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-11-1.png" title="plot of chunk class10-chunk-11" alt="plot of chunk class10-chunk-11" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-13">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">adj = get.adjacency(g)
+adj
+</code></pre>
+
+<pre><code>## 3 x 3 sparse Matrix of class &quot;dgCMatrix&quot;
+##           
+## [1,] . 1 1
+## [2,] 1 . 1
+## [3,] 1 1 .
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-14">
+  <div>
+    <h2>network representation</h2>
+    <pre><code class="r">el = get.edgelist(g)
+el
+</code></pre>
+
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    1    3
+## [3,]    2    3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="cen">
+  <div>
+    <h2>network centrality</h2>
+    <ul>
+<li>degree centrality</li>
+<li>closeness centrality</li>
+<li>betweenness centrality</li>
+<li>PageRank</li>
+<li>HITS (authority and hub scores)</li>
+</ul>
+
+<pre><code class="r">## KARATE network.
+## Zachary&#39;s karate club: social network of friendships between 34 members of a karate club at a US university in the 1970s. Please cite W. W. Zachary, An information flow model for conflict and fission in small groups, Journal of Anthropological Research 33, 452-473 (1977).
+
+## load the famous karate network from igraph package
+g = graph.famous(&quot;Zachary&quot;)
+g
+</code></pre>
+
+<pre><code>## IGRAPH c769c6a U--- 34 78 -- Zachary
+## + attr: name (g/c)
+## + edges from c769c6a:
+##  [1]  1-- 2  1-- 3  1-- 4  1-- 5  1-- 6  1-- 7  1-- 8  1-- 9  1--11  1--12  1--13  1--14  1--18  1--20  1--22  1--32
+## [17]  2-- 3  2-- 4  2-- 8  2--14  2--18  2--20  2--22  2--31  3-- 4  3-- 8  3--28  3--29  3--33  3--10  3-- 9  3--14
+## [33]  4-- 8  4--13  4--14  5-- 7  5--11  6-- 7  6--11  6--17  7--17  9--31  9--33  9--34 10--34 14--34 15--33 15--34
+## [49] 16--33 16--34 19--33 19--34 20--34 21--33 21--34 23--33 23--34 24--26 24--28 24--33 24--34 24--30 25--26 25--28
+## [65] 25--32 26--32 27--30 27--34 28--34 29--32 29--34 30--33 30--34 31--33 31--34 32--33 32--34 33--34
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-16">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">set.seed(1)
+E(g)$color = &quot;black&quot;
+plot(g)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-15-1.png" title="plot of chunk class10-chunk-15" alt="plot of chunk class10-chunk-15" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-17">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## obtain node degrees
+deg = degree(g)
+deg
+</code></pre>
+
+<pre><code>##  [1] 16  9 10  6  3  4  4  4  5  2  3  1  2  5  2  2  2  2  2  3  2  2  2  5  3  3  2  4  3  4  4  6 12 17
+</code></pre>
+
+<pre><code class="r">top = order(deg,decreasing=T)[1:5] ## the top-5 nodes with highest degrees
+top 
+</code></pre>
+
+<pre><code>## [1] 34  1 33  3  2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-18">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## size node by degree
+V(g)$size = abs(deg) * 1.5
+V(g)$label.color = &quot;black&quot;
+E(g)$color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;degree centrality&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-17-1.png" title="plot of chunk class10-chunk-17" alt="plot of chunk class10-chunk-17" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-19">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## compute node closeness centrality
+clo = closeness(g)
+clo
+</code></pre>
+
+<pre><code>##  [1] 0.01724138 0.01470588 0.01694915 0.01408451 0.01149425 0.01162791 0.01162791 0.01333333 0.01562500 0.01315789
+## [11] 0.01149425 0.01111111 0.01123596 0.01562500 0.01123596 0.01123596 0.00862069 0.01136364 0.01123596 0.01515152
+## [21] 0.01123596 0.01136364 0.01123596 0.01190476 0.01136364 0.01136364 0.01098901 0.01388889 0.01369863 0.01162791
+## [31] 0.01388889 0.01639344 0.01562500 0.01666667
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-20">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">top = order(clo,decreasing=T)[1:5]
+
+## size node by closeness
+V(g)$size = abs(clo) * 1000
+V(g)$label.color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;closeness&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-19-1.png" title="plot of chunk class10-chunk-19" alt="plot of chunk class10-chunk-19" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-21">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## compute node betweenness centrality
+bet = betweenness(g)
+bet
+</code></pre>
+
+<pre><code>##  [1] 231.0714286  28.4785714  75.8507937   6.2880952   0.3333333  15.8333333  15.8333333   0.0000000  29.5293651
+## [10]   0.4476190   0.3333333   0.0000000   0.0000000  24.2158730   0.0000000   0.0000000   0.0000000   0.0000000
+## [19]   0.0000000  17.1468254   0.0000000   0.0000000   0.0000000   9.3000000   1.1666667   2.0277778   0.0000000
+## [28]  11.7920635   0.9476190   1.5428571   7.6095238  73.0095238  76.6904762 160.5515873
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-22">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">top = order(bet,decreasing=T)[1:5]
+
+## size node by betweenness
+V(g)$size = abs(bet) * 0.1
+V(g)$label.color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;betweenness&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-21-1.png" title="plot of chunk class10-chunk-21" alt="plot of chunk class10-chunk-21" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-23">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">pg = page.rank(g)$vector
+pg
+</code></pre>
+
+<pre><code>##  [1] 0.096997285 0.052876924 0.057078509 0.035859858 0.021977952 0.029111155 0.029111155 0.024490497 0.029766056
+## [10] 0.014309397 0.021977952 0.009564745 0.014644892 0.029536456 0.014535994 0.014535994 0.016784005 0.014558677
+## [19] 0.014535994 0.019604636 0.014535994 0.014558677 0.014535994 0.031522515 0.021076034 0.021006197 0.015044038
+## [28] 0.025639767 0.019573459 0.026288538 0.024590155 0.037158087 0.071693226 0.100919182
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-24">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">top = order(pg,decreasing=T)[1:5]
+
+## size node by pagerank
+V(g)$size = abs(pg) * 250
+V(g)$label.color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;PageRank&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-23-1.png" title="plot of chunk class10-chunk-23" alt="plot of chunk class10-chunk-23" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-25">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## compute HITS
+aut = authority.score(g)$vector
+top = order(aut,decreasing=T)[1:5]
+
+## size node by authority scores
+V(g)$size = abs(aut) * 20
+V(g)$label.color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;HITS (authority)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-24-1.png" title="plot of chunk class10-chunk-24" alt="plot of chunk class10-chunk-24" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-26">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">hub = hub.score(g)$vector 
+top = order(hub,decreasing=T)[1:5]
+
+## size node by hub scores
+V(g)$size = abs(aut) * 20
+V(g)$label.color = &quot;black&quot;
+V(g)[ top ]$label.color = &quot;red&quot; ## highlight the top-5 nodes
+set.seed(1)
+plot(g)
+title(&quot;HITS (hub)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-25-1.png" title="plot of chunk class10-chunk-25" alt="plot of chunk class10-chunk-25" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-27">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">## apply HITS on the toy matrix (directed network)
+m
+</code></pre>
+
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    0    1    1
+## [2,]    1    0    0
+## [3,]    0    1    0
+</code></pre>
+
+<pre><code class="r">lab = c(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) ## label nodes as &#39;a&#39;,&#39;b&#39;,&#39;c&#39;
+## create directed graph from the toy matrix
+g = graph.adjacency(m,mode=&quot;directed&quot;) 
+g
+</code></pre>
+
+<pre><code>## IGRAPH 014f480 D--- 3 4 -- 
+## + edges from 014f480:
+## [1] 1-&gt;2 1-&gt;3 2-&gt;1 3-&gt;2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-28">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">aut = authority.score(g)$vector
+
+## size node by authority scores
+V(g)$size = abs(aut) * 30
+V(g)$label.color = &quot;black&quot;
+set.seed(1)
+plot(g,edge.color=&#39;black&#39;)
+title(&quot;HITS (authority)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-27-1.png" title="plot of chunk class10-chunk-27" alt="plot of chunk class10-chunk-27" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-29">
+  <div>
+    <h2>network centrality</h2>
+    <pre><code class="r">hub = hub.score(g)$vector 
+
+## size node by hub scores
+V(g)$size = abs(hub) * 30
+V(g)$label.color = &quot;black&quot;
+set.seed(1)
+plot(g,edge.color=&#39;black&#39;)
+title(&quot;HITS (hub)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-28-1.png" title="plot of chunk class10-chunk-28" alt="plot of chunk class10-chunk-28" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="layout">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">## load the famous karate network from igraph package
+g = graph.famous(&quot;Zachary&quot;)
+E(g)$color = &quot;black&quot;
+
+set.seed(1)
+plot(g, layout=layout.random, main=&#39;random&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-29-1.png" title="plot of chunk class10-chunk-29" alt="plot of chunk class10-chunk-29" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-31">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">set.seed(1)
+plot(g, layout=layout.kamada.kawai, main=&#39;kamada kawai (KK)&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-30-1.png" title="plot of chunk class10-chunk-30" alt="plot of chunk class10-chunk-30" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-32">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">set.seed(1)
+plot(g, layout=layout.circle, main = &#39;circle&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-31-1.png" title="plot of chunk class10-chunk-31" alt="plot of chunk class10-chunk-31" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-33">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">set.seed(1)
+plot(g, layout=layout.fruchterman.reingold, main = &#39;fruchterman reingold (FR)&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-32-1.png" title="plot of chunk class10-chunk-32" alt="plot of chunk class10-chunk-32" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-34">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">set.seed(1)
+plot(g, layout=layout.lgl, main = &#39;lgl&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-33-1.png" title="plot of chunk class10-chunk-33" alt="plot of chunk class10-chunk-33" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-35">
+  <div>
+    <h2>network layout</h2>
+    <pre><code class="r">set.seed(1)
+plot(g, layout=layout.graphopt, main = &#39;graphopt&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-34-1.png" title="plot of chunk class10-chunk-34" alt="plot of chunk class10-chunk-34" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="comm">
+  <div>
+    <h2>network community</h2>
+    <ul>
+<li>modularity</li>
+<li>random walk</li>
+<li>spin-glass</li>
+<li>eigenvector</li>
+<li>etc.</li>
+</ul>
+
+<pre><code class="r">g = graph.famous(&quot;Zachary&quot;)
+
+## get random-walk community
+wc = walktrap.community(g)
+modularity(wc)
+</code></pre>
+
+<pre><code>## [1] 0.3532216
+</code></pre>
+
+<pre><code class="r">membership(wc)
+</code></pre>
+
+<pre><code>##  [1] 1 1 2 1 5 5 5 1 2 2 5 1 1 2 3 3 5 1 3 1 3 1 3 4 4 4 3 4 2 3 2 2 3 3
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-37">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">set.seed(1)
+plot(wc, g, main=&#39;random-walk community&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-36-1.png" title="plot of chunk class10-chunk-36" alt="plot of chunk class10-chunk-36" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-38">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">dend = as.dendrogram(wc, use.modularity=TRUE)
+plot(dend, nodePar=list(pch=c(NA, 20)))
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-37-1.png" title="plot of chunk class10-chunk-37" alt="plot of chunk class10-chunk-37" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-39">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">dendPlot(wc)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-38-1.png" title="plot of chunk class10-chunk-38" alt="plot of chunk class10-chunk-38" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-40">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">## get modularity-based community
+fc = fastgreedy.community(g)
+modularity(fc)
+</code></pre>
+
+<pre><code>## [1] 0.3806706
+</code></pre>
+
+<pre><code class="r">membership(fc)
+</code></pre>
+
+<pre><code>##  [1] 1 3 3 3 1 1 1 3 2 3 1 1 3 3 2 2 1 3 2 1 2 3 2 2 2 2 2 2 2 2 2 2 2 2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-41">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">set.seed(1)
+plot(fc, g, main=&#39;modularity community&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-40-1.png" title="plot of chunk class10-chunk-40" alt="plot of chunk class10-chunk-40" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-42">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">dendPlot(fc)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-41-1.png" title="plot of chunk class10-chunk-41" alt="plot of chunk class10-chunk-41" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-43">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">sg = spinglass.community(g)
+modularity(sg)
+</code></pre>
+
+<pre><code>## [1] 0.4197896
+</code></pre>
+
+<pre><code class="r">set.seed(1)
+plot(sg, g, main=&#39;spin-glass community&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-42-1.png" title="plot of chunk class10-chunk-42" alt="plot of chunk class10-chunk-42" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-44">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">le = leading.eigenvector.community(g)
+modularity(sg)
+</code></pre>
+
+<pre><code>## [1] 0.4197896
+</code></pre>
+
+<pre><code class="r">set.seed(1)
+plot(le, g, main=&#39;eigenvector community&#39;)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-43-1.png" title="plot of chunk class10-chunk-43" alt="plot of chunk class10-chunk-43" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-45">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">## compare the simlarity between two community assignment
+## @see http://hosho.ees.hokudai.ac.jp/~kubo/Rdoc/library/igraph/html/compare.communities.html
+compare(sg, le, method=&quot;rand&quot;)
+</code></pre>
+
+<pre><code>## [1] 0.9500891
+</code></pre>
+
+<pre><code class="r">compare(sg, le, method=&quot;nmi&quot;)
+</code></pre>
+
+<pre><code>## [1] 0.896476
+</code></pre>
+
+<pre><code class="r">compare(membership(sg), membership(le), method=&quot;rand&quot;)
+</code></pre>
+
+<pre><code>## [1] 0.9500891
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-46">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">## highlight between-community edges
+le = leading.eigenvector.community(g,steps=1)
+le
+</code></pre>
+
+<pre><code>## IGRAPH clustering leading eigenvector, groups: 2, mod: 0.37
+## + groups:
+##   $`1`
+##    [1]  1  2  3  4  5  6  7  8 11 12 13 14 17 18 20 22
+##   
+##   $`2`
+##    [1]  9 10 15 16 19 21 23 24 25 26 27 28 29 30 31 32 33 34
+## 
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide ssscode-nowrap" id="slide-47">
+  <div>
+    <h2>network community</h2>
+    <pre><code class="r">V(g)$color = ifelse(le$membership==1, &quot;lightblue&quot;, &quot;green&quot;)
+
+scale &lt;- function(v, a, b) {
+  v = v-min(v) ; v = v/max(v) ; v = v * (b-a) ; v+a
+}
+
+V(g)$size = scale(sapply(le$eigenvector,abs), 10, 20)
+E(g)$color = &quot;darkgrey&quot;
+E(g)[ V(g)[ color==&quot;lightblue&quot; ] %--% V(g)[ color==&quot;green&quot; ] ]$color = &quot;red&quot;
+set.seed(1)
+plot(g, layout=layout.kamada.kawai, vertex.label.font=2)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-46-1.png" title="plot of chunk class10-chunk-46" alt="plot of chunk class10-chunk-46" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="attr">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">## @see https://github.com/igraph/igraph/tree/master/doc/presentations/wien08
+traits = read.csv(&quot;http://cneurocvs.rmki.kfki.hu/igraphbook/traits.csv&quot;, head=FALSE)
+traits[1:3,]
+</code></pre>
+
+<pre><code>##               V1 V2 V3
+## 1 Alice Anderson 48  F
+## 2   Bob Bradford 33  M
+## 3   Cecil Connor 45  F
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-49">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">rel = read.csv(&quot;http://cneurocvs.rmki.kfki.hu/igraphbook/relations.csv&quot;, head=FALSE)
+rel[1:3,]
+</code></pre>
+
+<pre><code>##      V1    V2 V3 V4 V5
+## 1   Bob Alice  N  4  4
+## 2 Cecil   Bob  N  5  5
+## 3 Cecil Alice  Y  5  5
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-50">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">g = graph.empty(directed=T)
+g = add.vertices(g, nrow(traits), 
+                 name=as.character(traits[,1]), age=traits[,2],
+                 gender=as.character(traits[,3]))
+V(g)$name
+</code></pre>
+
+<pre><code>##  [1] &quot;Alice Anderson&quot;    &quot;Bob Bradford&quot;      &quot;Cecil Connor&quot;      &quot;David Daugher&quot;     &quot;Esmeralda Escobar&quot;
+##  [6] &quot;Frank Finley&quot;      &quot;Gabi Garbo&quot;        &quot;Helen Hunt&quot;        &quot;Iris Irving&quot;       &quot;James Jones&quot;
+</code></pre>
+
+<pre><code class="r">V(g)$age
+</code></pre>
+
+<pre><code>##  [1] 48 33 45 34 21 36 44 40 25 47
+</code></pre>
+
+<pre><code class="r">V(g)$gender
+</code></pre>
+
+<pre><code>##  [1] &quot;F&quot; &quot;M&quot; &quot;F&quot; &quot;M&quot; &quot;F&quot; &quot;M&quot; &quot;F&quot; &quot;F&quot; &quot;F&quot; &quot;M&quot;
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-51">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">names = sapply(strsplit(V(g)$name, &quot; &quot;), &quot;[&quot;,1)
+V(g)$name = names
+ids = (1:length(names)) # index starts from 1
+names(ids) = names
+ids
+</code></pre>
+
+<pre><code>##     Alice       Bob     Cecil     David Esmeralda     Frank      Gabi     Helen      Iris     James 
+##         1         2         3         4         5         6         7         8         9        10
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode" id="slide-52">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">from = as.character(rel[,1])
+to = as.character(rel[,2])
+edges = matrix(c(ids[from], ids[to]), nc=2)
+edges
+</code></pre>
+
+<pre><code>##       [,1] [,2]
+##  [1,]    2    1
+##  [2,]    3    2
+##  [3,]    3    1
+##  [4,]    4    1
+##  [5,]    4    2
+##  [6,]    5    1
+##  [7,]    6    1
+##  [8,]    6    5
+##  [9,]    7    2
+## [10,]    7    1
+## [11,]    8    1
+## [12,]    9    3
+## [13,]    9    2
+## [14,]    9    5
+## [15,]   10    1
+## [16,]   10    2
+## [17,]   10    7
+## [18,]    1    2
+## [19,]    2    3
+## [20,]    1    3
+## [21,]    1    4
+## [22,]    2    4
+## [23,]    1    5
+## [24,]    1    6
+## [25,]    5    6
+## [26,]    2    7
+## [27,]    1    7
+## [28,]    1    8
+## [29,]    3    9
+## [30,]    2    9
+## [31,]    5    9
+## [32,]    1   10
+## [33,]    2   10
+## [34,]    7   10
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-53">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">g = add.edges(g, t(edges), 
+              room=as.character(rel[,3]),
+              friend=rel[,4], advice=rel[,5])
+g
+</code></pre>
+
+<pre><code>## IGRAPH eb04c57 DN-- 10 34 -- 
+## + attr: name (v/c), age (v/n), gender (v/c), room (e/c), friend (e/n), advice (e/n)
+## + edges from eb04c57 (vertex names):
+##  [1] Bob      -&gt;Alice     Cecil    -&gt;Bob       Cecil    -&gt;Alice     David    -&gt;Alice     David    -&gt;Bob      
+##  [6] Esmeralda-&gt;Alice     Frank    -&gt;Alice     Frank    -&gt;Esmeralda Gabi     -&gt;Bob       Gabi     -&gt;Alice    
+## [11] Helen    -&gt;Alice     Iris     -&gt;Cecil     Iris     -&gt;Bob       Iris     -&gt;Esmeralda James    -&gt;Alice    
+## [16] James    -&gt;Bob       James    -&gt;Gabi      Alice    -&gt;Bob       Bob      -&gt;Cecil     Alice    -&gt;Cecil    
+## [21] Alice    -&gt;David     Bob      -&gt;David     Alice    -&gt;Esmeralda Alice    -&gt;Frank     Esmeralda-&gt;Frank    
+## [26] Bob      -&gt;Gabi      Alice    -&gt;Gabi      Alice    -&gt;Helen     Cecil    -&gt;Iris      Bob      -&gt;Iris     
+## [31] Esmeralda-&gt;Iris      Alice    -&gt;James     Bob      -&gt;James     Gabi     -&gt;James
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-54">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">male = which(V(g)$gender==&#39;M&#39;)
+V(g)$shape = &quot;circle&quot;
+V(g)$shape[male] =&quot;rectangle&quot;
+E(g)$color = &quot;black&quot;
+E(g)[ room==&quot;Y&quot; ]$color = &quot;red&quot;
+set.seed(1)
+plot(g, layout=layout.kamada.kawai, edge.color=E(g)$color)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-53-1.png" title="plot of chunk class10-chunk-53" alt="plot of chunk class10-chunk-53" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-55">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">E(g)$color = &quot;black&quot;
+E(g)[ advice&gt;2 ]$color = &quot;green&quot;
+set.seed(1)
+plot(g, layout=layout.kamada.kawai, edge.color=E(g)$color)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-54-1.png" title="plot of chunk class10-chunk-54" alt="plot of chunk class10-chunk-54" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode" id="slide-56">
+  <div>
+    <h2>graph with attributes</h2>
+    <pre><code class="r">E(g)$color = &quot;black&quot;
+E(g)[ friend&gt;4 ]$color = &quot;skyblue&quot;
+set.seed(1)
+plot(g, layout=layout.kamada.kawai, edge.color=E(g)$color)
+</code></pre>
+
+<p><img src="assets/fig/class10-chunk-55-1.png" title="plot of chunk class10-chunk-55" alt="plot of chunk class10-chunk-55" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>
