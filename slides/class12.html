@@ -1,0 +1,1196 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<title>Class 12</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=1274, user-scalable=no">
+	<meta name="description" content="Class 12">
+	<meta name="author" content="Yu-Ru Lin">
+	<meta name="generator" content="slidify" />
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/shower/themes/ribbon/styles/screen.css">
+	<link rel="stylesheet" media="print"
+	  href="libraries/frameworks/shower/themes/ribbon/styles/print.css">
+	<link rel="stylesheet" href="libraries/highlighters/highlight.js/css/solarized_light.css">  <link rel="stylesheet" href = "assets/css/mystyle.css">
+<link rel="stylesheet" href = "assets/css/ribbons.css">
+
+	<!--
+		To apply styles to the certain slides
+		use slide ID to get needed elements
+		-->
+	<style>
+		#Cover h2 {
+      margin:65px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			}
+		#FitToWidth h2,
+		#FitToHeight h2 {
+			color:#FFF;
+			text-align:center;
+			}
+	</style> 
+</head>
+<body class="list">
+  <header class="caption">
+  	<h1>Class 12</h1>
+	</header>
+  <section class="slide " id="toc">
+  <div>
+    <h2>Class 12</h2>
+    <ul>
+<li><a href="#set-up">Set up</a></li>
+<li><a href="#data">Data manipulation</a></li>
+<li><a href="#sample">Sample dataset</a></li>
+<li><a href="#recommender">Recommender System</a></li>
+<li><a href="#eval">Evaluation</a></li>
+</ul>
+
+  </div>
+</section>
+<section class="slide code" id="set-up">
+  <div>
+    <h2>Install R packages</h2>
+    <pre><code class="r">## this tutorial uses the following packages
+install.packages(&#39;recommenderlab&#39;)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide code" id="slide-3">
+  <div>
+    <h2>Recommendation</h2>
+    <ul>
+<li>The sample code is based on the examples given in <a href="http://cran.r-project.org/web/packages/recommenderlab/vignettes/recommenderlab.pdf">http://cran.r-project.org/web/packages/recommenderlab/vignettes/recommenderlab.pdf</a></li>
+<li>See information about the installation and more details about what the package can do in the manual.</li>
+</ul>
+
+<pre><code class="r">library(recommenderlab)
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="data">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## create a toy reating matrix
+m = matrix(sample(c(as.numeric(0:5), NA), 50,
+                  replace=TRUE, prob=c(rep(.4/6,6),.6)), ncol=10,
+           dimnames=list(user=paste(&quot;u&quot;, 1:5, sep=&#39;&#39;),
+                         item=paste(&quot;i&quot;, 1:10, sep=&#39;&#39;)))
+m
+</code></pre>
+
+<pre><code>##     item
+## user i1 i2 i3 i4 i5 i6 i7 i8 i9 i10
+##   u1  5 NA  2 NA NA NA NA NA NA  NA
+##   u2 NA NA  3  3  2 NA  1 NA  2  NA
+##   u3 NA NA NA NA  3  2  3 NA  5  NA
+##   u4  0 NA  0  3  0  5  5 NA  0  NA
+##   u5 NA NA NA NA  0 NA  4 NA  2  NA
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-5">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">r = as(m, &quot;realRatingMatrix&quot;) ## store the matrix in sparse format
+r
+</code></pre>
+
+<pre><code>## 5 x 10 rating matrix of class &#39;realRatingMatrix&#39; with 21 ratings.
+</code></pre>
+
+<pre><code class="r">## The realRatingMatrix can be coerced back into a matrix which is identical to the original matrix
+identical(as(r, &quot;matrix&quot;),m)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-6">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## a list of users
+as(r, &quot;list&quot;)
+</code></pre>
+
+<pre><code>## $u1
+## i1 i3 
+##  5  2 
+## 
+## $u2
+## i3 i4 i5 i7 i9 
+##  3  3  2  1  2 
+## 
+## $u3
+## i5 i6 i7 i9 
+##  3  2  3  5 
+## 
+## $u4
+## i1 i3 i4 i5 i6 i7 i9 
+##  0  0  3  0  5  5  0 
+## 
+## $u5
+## i5 i7 i9 
+##  0  4  2
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-7">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## rating data in data.frame format
+head(as(r, &quot;data.frame&quot;))
+</code></pre>
+
+<pre><code>##    user item rating
+## 1    u1   i1      5
+## 3    u1   i3      2
+## 4    u2   i3      3
+## 6    u2   i4      3
+## 8    u2   i5      2
+## 14   u2   i7      1
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-8">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## normalization: remove rating bias by subtracting the row mean from all ratings in the row
+r_m = normalize(r)
+r_m
+</code></pre>
+
+<pre><code>## 5 x 10 rating matrix of class &#39;realRatingMatrix&#39; with 21 ratings.
+## Normalized using center on rows.
+</code></pre>
+
+<pre><code class="r">getRatingMatrix(r_m)
+</code></pre>
+
+<pre><code>## 5 x 10 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                                                              
+## u1  1.500000 . -1.500000 .         .         .         .        .  .        .
+## u2  .        .  0.800000 0.800000 -0.200000  .        -1.200000 . -0.200000 .
+## u3  .        .  .        .        -0.250000 -1.250000 -0.250000 .  1.750000 .
+## u4 -1.857143 . -1.857143 1.142857 -1.857143  3.142857  3.142857 . -1.857143 .
+## u5  .        .  .        .        -2.000000  .         2.000000 .  0.000000 .
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-9">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">r_z = normalize(r,method=&quot;Z-score&quot;)
+r_z
+</code></pre>
+
+<pre><code>## 5 x 10 rating matrix of class &#39;realRatingMatrix&#39; with 21 ratings.
+## Normalized using z-score on rows.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-10">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## visualize the matrices
+image(r, main = &quot;Raw Ratings&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-9-1.png" title="plot of chunk class12-chunk-9" alt="plot of chunk class12-chunk-9" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-11">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">image(r_m, main = &quot;Normalized Ratings&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-10-1.png" title="plot of chunk class12-chunk-10" alt="plot of chunk class12-chunk-10" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-12">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">image(r_z, main = &quot;Normalized Ratings (Z-score)&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-11-1.png" title="plot of chunk class12-chunk-11" alt="plot of chunk class12-chunk-11" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-13">
+  <div>
+    <h2>Data manipulation</h2>
+    <pre><code class="r">## Binarization: transform the real-valued matrix into a 0-1 matrix based on a user specified threshold (min_ratings)
+r_b = binarize(r, minRating=4)
+as(r_b, &quot;matrix&quot;)
+</code></pre>
+
+<pre><code>##       i1    i2    i3    i4    i5    i6    i7    i8    i9   i10
+## u1  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## u2 FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## u3 FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+## u4 FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE
+## u5 FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="sample">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## load the Jester5k data: it contains a sample of 5000 users from the anonymous ratings data from the Jester Online Joke Recommender System collected between April 1999 and May 2003 (Goldberg, Roeder, Gupta, and Perkins, 2001).
+
+data(Jester5k)
+Jester5k
+</code></pre>
+
+<pre><code>## 5000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 362106 ratings.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-15">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">set.seed(1234) ## reset random seed before sampling
+
+## use only a subset of the data containing a sample of 1000 users
+r = sample(Jester5k, 1000)
+
+## the ratings for the first user
+rowCounts(r[1,])
+as(r[1,], &quot;list&quot;)
+</code></pre>
+
+<pre><code>## $u8426
+##    j1    j2    j3    j4    j5    j6    j7    j8    j9   j10   j11   j12   j13   j14   j15   j16   j17   j18   j19   j20 
+##  7.96 -6.07 -1.84  5.53  5.92  6.75 -5.87 -7.43  6.21  5.58  6.02  6.80 -0.15  6.50 -7.57  2.33 -5.29 -1.94  8.20  1.99 
+##   j21   j22   j23   j24   j25   j26   j27   j28   j29   j30   j31   j32   j33   j34   j35   j36   j37   j38   j39   j40 
+##  6.12  5.63  2.52 -6.17  6.36  0.10  5.53  5.63 -0.92  0.87  7.09  5.97 -0.34  6.55  7.48  7.09  1.36  6.89  6.84 -8.16 
+##   j41   j42   j43   j44   j45   j46   j47   j48   j49   j50   j51   j52   j53   j54   j55   j56   j57   j58   j59   j60 
+## -3.88  6.89 -1.31  5.39  5.58  4.76  0.68  1.70  7.23  8.30  0.83  5.63  6.65  6.65 -9.17  8.35 -0.63 -9.51  5.63 -6.65 
+##   j61   j62   j63   j64   j65   j66   j67   j68   j69   j70 
+##  6.89  7.14 -1.26  5.73 -9.32  3.11  5.58  7.04  6.02  6.65
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-16">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## The user has rated 70 jokes
+## the list shows the ratings and the user&#39;s rating average
+
+rowMeans(as(r[1,], &quot;matrix&quot;),na.rm=TRUE)
+</code></pre>
+
+<pre><code>##    u8426 
+## 2.582429
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-17">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## generate a histogram to show the distribution of the ratings
+hist(getRatings(r), breaks=100)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-16-1.png" title="plot of chunk class12-chunk-16" alt="plot of chunk class12-chunk-16" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-18">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## the distribution after normalization
+hist(getRatings(normalize(r)), breaks=100)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-17-1.png" title="plot of chunk class12-chunk-17" alt="plot of chunk class12-chunk-17" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-19">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">hist(getRatings(normalize(r, method=&quot;Z-score&quot;)), breaks=100)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-18-1.png" title="plot of chunk class12-chunk-18" alt="plot of chunk class12-chunk-18" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-20">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## how many jokes each user has rated
+hist(rowCounts(r), breaks=50)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-19-1.png" title="plot of chunk class12-chunk-19" alt="plot of chunk class12-chunk-19" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-21">
+  <div>
+    <h2>Sample dataset</h2>
+    <pre><code class="r">## the mean rating for each joke
+hist(colMeans(as(r, &quot;matrix&quot;)), breaks=20)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-20-1.png" title="plot of chunk class12-chunk-20" alt="plot of chunk class12-chunk-20" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="recommender">
+  <div>
+    <h2>Recommender System</h2>
+    <pre><code class="r">## (training) create a recommender which generates recommendations solely on the popularity of items (the number of users who have the item in their profile)
+r = Recommender(Jester5k[1:1000], method = &quot;POPULAR&quot;)
+r
+</code></pre>
+
+<pre><code>## Recommender of type &#39;POPULAR&#39; for &#39;realRatingMatrix&#39; 
+## learned using 1000 users.
+</code></pre>
+
+<pre><code class="r">## get the model by getModel()
+names(getModel(r))
+</code></pre>
+
+<pre><code>## [1] &quot;topN&quot;                  &quot;ratings&quot;               &quot;normalize&quot;             &quot;aggregationRatings&quot;   
+## [5] &quot;aggregationPopularity&quot; &quot;verbose&quot;
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-23">
+  <div>
+    <h2>Recommender System</h2>
+    <pre><code class="r">getModel(r)$topN
+</code></pre>
+
+<pre><code>## Recommendations as &#39;topNList&#39; with n = 100 for 1 users.
+</code></pre>
+
+<pre><code class="r">## (prediction) create top-5 recommendation lists for two users who were not used to learn the model
+recom = predict(r, Jester5k[1001:1002], n=5)
+recom
+</code></pre>
+
+<pre><code>## Recommendations as &#39;topNList&#39; with n = 5 for 2 users.
+</code></pre>
+
+<pre><code class="r">as(recom, &quot;list&quot;)
+</code></pre>
+
+<pre><code>## $u20089
+## [1] &quot;j89&quot; &quot;j72&quot; &quot;j47&quot; &quot;j93&quot; &quot;j76&quot;
+## 
+## $u11691
+## [1] &quot;j89&quot; &quot;j93&quot; &quot;j76&quot; &quot;j88&quot; &quot;j96&quot;
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-24">
+  <div>
+    <h2>Recommender System</h2>
+    <pre><code class="r">## extract sublists of the best items in the top-N
+recom3 = bestN(recom, n = 3)
+recom3
+</code></pre>
+
+<pre><code>## Recommendations as &#39;topNList&#39; with n = 3 for 2 users.
+</code></pre>
+
+<pre><code class="r">as(recom3, &quot;list&quot;)
+</code></pre>
+
+<pre><code>## $u20089
+## [1] &quot;j89&quot; &quot;j72&quot; &quot;j47&quot;
+## 
+## $u11691
+## [1] &quot;j89&quot; &quot;j93&quot; &quot;j76&quot;
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-25">
+  <div>
+    <h2>Recommender System</h2>
+    <pre><code class="r">## predict ratings
+recom = predict(r, Jester5k[1001:1002], type=&quot;ratings&quot;)
+recom
+</code></pre>
+
+<pre><code>## 2 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 97 ratings.
+</code></pre>
+
+<pre><code class="r">as(recom, &quot;matrix&quot;)[,1:10] 
+</code></pre>
+
+<pre><code>##               j1        j2         j3        j4 j5 j6 j7 j8        j9        j10
+## u20089 -1.013133 -1.631921 -1.8756885 -3.684513 NA NA NA NA -2.742669 -0.8324626
+## u11691        NA        NA -0.6376646 -2.446489 NA NA NA NA -1.504646         NA
+</code></pre>
+
+<pre><code class="r">## The prediction contains NA for the items rated by the active users
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="eval">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## evaluation scheme -- determines what and how data is used for training and evaluation;
+## splits the first 1000 users in Jester5k into a training set (90%) and a test set (10%)
+e = evaluationScheme(Jester5k[1:1000], method=&quot;split&quot;, train=0.9, given=15, goodRating=5)
+e
+</code></pre>
+
+<pre><code>## Evaluation scheme with 15 items given
+## Method: &#39;split&#39; with 1 run(s).
+## Training set proportion: 0.900
+## Good ratings: &gt;=5.000000
+## Data set: 1000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 72358 ratings.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-27">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## create a user-based collaborative filtering
+r1 = Recommender(getData(e, &quot;train&quot;), &quot;UBCF&quot;)
+r1
+</code></pre>
+
+<pre><code>## Recommender of type &#39;UBCF&#39; for &#39;realRatingMatrix&#39; 
+## learned using 900 users.
+</code></pre>
+
+<pre><code class="r">## create an item-based collaborative filtering
+r2 = Recommender(getData(e, &quot;train&quot;), &quot;IBCF&quot;)
+r2
+</code></pre>
+
+<pre><code>## Recommender of type &#39;IBCF&#39; for &#39;realRatingMatrix&#39; 
+## learned using 900 users.
+</code></pre>
+
+<pre><code class="r">## compute predicted ratings for the known part (rated items) of the test data (15 items for each user)
+p1 = predict(r1, getData(e, &quot;known&quot;), type=&quot;ratings&quot;)
+p1
+</code></pre>
+
+<pre><code>## 100 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 8420 ratings.
+</code></pre>
+
+<pre><code class="r">p2 = predict(r2, getData(e, &quot;known&quot;), type=&quot;ratings&quot;)
+p2
+</code></pre>
+
+<pre><code>## 100 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 8465 ratings.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-28">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## calculate the error between the prediction and the unknown part of the test data
+error &lt;- rbind(
+  UBCF = calcPredictionAccuracy(p1, getData(e, &quot;unknown&quot;)),
+  IBCF = calcPredictionAccuracy(p2, getData(e, &quot;unknown&quot;))
+)
+error
+</code></pre>
+
+<pre><code>##          RMSE      MSE      MAE
+## UBCF 4.824231 23.27320 3.789233
+## IBCF 5.405989 29.22472 4.215431
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-29">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">scheme = evaluationScheme(Jester5k[1:1000], method=&quot;cross&quot;, k=4, given=3, goodRating=5)
+scheme
+</code></pre>
+
+<pre><code>## Evaluation scheme with 3 items given
+## Method: &#39;cross-validation&#39; with 4 run(s).
+## Good ratings: &gt;=5.000000
+## Data set: 1000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 72358 ratings.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-30">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## evaluate top-1, top-3, top-5, top-10, top-15 and top-20 recommendation lists
+results = evaluate(scheme, method=&quot;POPULAR&quot;, n=c(1,3,5,10,15,20))
+</code></pre>
+
+<pre><code>## POPULAR run fold/sample [model time/prediction time]
+##   1  [0.008sec/0.38sec] 
+##   2  [0.016sec/0.348sec] 
+##   3  [0.008sec/0.356sec] 
+##   4  [0.004sec/0.36sec]
+</code></pre>
+
+<pre><code class="r">results
+</code></pre>
+
+<pre><code>## Evaluation results for 4 folds/samples using method &#39;POPULAR&#39;.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-31">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## getConfusionMatrix() will return the confusion matrices for the 4 runs (we used 4-fold cross evaluation)
+getConfusionMatrix(results)[[1]] ## confusion matrix of the first run
+</code></pre>
+
+<pre><code>##       TP     FP     FN     TN precision     recall        TPR         FPR
+## 1  0.468  0.532 17.184 78.816 0.4680000 0.03755426 0.03755426 0.006283797
+## 3  1.300  1.700 16.352 77.648 0.4333333 0.09526287 0.09526287 0.020734920
+## 5  2.100  2.900 15.552 76.448 0.4200000 0.15157369 0.15157369 0.035329227
+## 10 3.928  6.072 13.724 73.276 0.3928000 0.27844880 0.27844880 0.074114367
+## 15 5.568  9.432 12.084 69.916 0.3712000 0.38273353 0.38273353 0.114834550
+## 20 7.048 12.952 10.604 66.396 0.3524000 0.46862495 0.46862495 0.157549180
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-32">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## The average for all runs
+avg(results)
+</code></pre>
+
+<pre><code>##       TP     FP     FN     TN precision     recall        TPR         FPR
+## 1  0.459  0.541 16.745 79.255 0.4590000 0.03812514 0.03812514 0.006399528
+## 3  1.238  1.762 15.966 78.034 0.4126667 0.09187477 0.09187477 0.021166266
+## 5  2.033  2.967 15.171 76.829 0.4066000 0.14582509 0.14582509 0.035641121
+## 10 3.924  6.076 13.280 73.720 0.3924000 0.28136236 0.28136236 0.073285515
+## 15 5.656  9.344 11.548 70.452 0.3770667 0.39449102 0.39449102 0.112652261
+## 20 7.066 12.934 10.138 66.862 0.3533000 0.47925899 0.47925899 0.156359263
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-33">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">plot(results, annotate=TRUE)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-32-1.png" title="plot of chunk class12-chunk-32" alt="plot of chunk class12-chunk-32" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-34">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">plot(results, &quot;prec/rec&quot;, annotate=TRUE)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-33-1.png" title="plot of chunk class12-chunk-33" alt="plot of chunk class12-chunk-33" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-35">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## comparison of several recommender algorithms
+set.seed(2016)
+scheme &lt;- evaluationScheme(Jester5k[1:1000], method=&quot;split&quot;, train = .9, k=1, given=-5, goodRating=5)
+scheme
+</code></pre>
+
+<pre><code>## Evaluation scheme using all-but-5 items
+## Method: &#39;split&#39; with 1 run(s).
+## Training set proportion: 0.900
+## Good ratings: &gt;=5.000000
+## Data set: 1000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 72358 ratings.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-36">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">algorithms &lt;- list(
+&quot;random items&quot; = list(name=&quot;RANDOM&quot;, param=NULL),
+&quot;popular items&quot; = list(name=&quot;POPULAR&quot;, param=NULL),
+&quot;user-based CF&quot; = list(name=&quot;UBCF&quot;, param=list(nn=50)),
+&quot;item-based CF&quot; = list(name=&quot;IBCF&quot;, param=list(k=50)),
+&quot;SVD approximation&quot; = list(name=&quot;SVD&quot;, param=list(k = 50))
+)
+## run algorithms
+results &lt;- evaluate(scheme, algorithms, type = &quot;topNList&quot;,
+  n=c(1, 3, 5, 10, 15, 20))
+</code></pre>
+
+<pre><code>## RANDOM run fold/sample [model time/prediction time]
+##   1  [0sec/0.016sec] 
+## POPULAR run fold/sample [model time/prediction time]
+##   1  [0.008sec/0.14sec] 
+## UBCF run fold/sample [model time/prediction time]
+##   1  [0.004sec/0.196sec] 
+## IBCF run fold/sample [model time/prediction time]
+##   1  [0.04sec/0.016sec] 
+## SVD run fold/sample [model time/prediction time]
+##   1  [0.124sec/0.012sec]
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-37">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">results
+</code></pre>
+
+<pre><code>## List of evaluation results for 5 recommenders:
+## Evaluation results for 1 folds/samples using method &#39;RANDOM&#39;.
+## Evaluation results for 1 folds/samples using method &#39;POPULAR&#39;.
+## Evaluation results for 1 folds/samples using method &#39;UBCF&#39;.
+## Evaluation results for 1 folds/samples using method &#39;IBCF&#39;.
+## Evaluation results for 1 folds/samples using method &#39;SVD&#39;.
+</code></pre>
+
+<pre><code class="r">names(results)
+</code></pre>
+
+<pre><code>## [1] &quot;random items&quot;      &quot;popular items&quot;     &quot;user-based CF&quot;     &quot;item-based CF&quot;     &quot;SVD approximation&quot;
+</code></pre>
+
+<pre><code class="r">results[[&quot;user-based CF&quot;]]
+</code></pre>
+
+<pre><code>## Evaluation results for 1 folds/samples using method &#39;UBCF&#39;.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-38">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">plot(results, annotate=c(1,3), legend=&quot;bottomright&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-37-1.png" title="plot of chunk class12-chunk-37" alt="plot of chunk class12-chunk-37" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-39">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">plot(results, &quot;prec/rec&quot;, annotate=3, legend=&quot;topleft&quot;)
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-38-1.png" title="plot of chunk class12-chunk-38" alt="plot of chunk class12-chunk-38" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide sscode-nowrap" id="slide-40">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">## run algorithms
+results &lt;- evaluate(scheme, algorithms, type = &quot;ratings&quot;)
+</code></pre>
+
+<pre><code>## RANDOM run fold/sample [model time/prediction time]
+##   1  [0sec/0.008sec] 
+## POPULAR run fold/sample [model time/prediction time]
+##   1  [0.008sec/0.004sec] 
+## UBCF run fold/sample [model time/prediction time]
+##   1  [0.004sec/0.196sec] 
+## IBCF run fold/sample [model time/prediction time]
+##   1  [0.052sec/0.008sec] 
+## SVD run fold/sample [model time/prediction time]
+##   1  [0.112sec/0.008sec]
+</code></pre>
+
+<pre><code class="r">results
+</code></pre>
+
+<pre><code>## List of evaluation results for 5 recommenders:
+## Evaluation results for 1 folds/samples using method &#39;RANDOM&#39;.
+## Evaluation results for 1 folds/samples using method &#39;POPULAR&#39;.
+## Evaluation results for 1 folds/samples using method &#39;UBCF&#39;.
+## Evaluation results for 1 folds/samples using method &#39;IBCF&#39;.
+## Evaluation results for 1 folds/samples using method &#39;SVD&#39;.
+</code></pre>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="slide scode-nowrap" id="slide-41">
+  <div>
+    <h2>Evaluation</h2>
+    <pre><code class="r">plot(results, ylim = c(0,100))
+</code></pre>
+
+<p><img src="assets/fig/class12-chunk-40-1.png" title="plot of chunk class12-chunk-40" alt="plot of chunk class12-chunk-40" width="420" /></p>
+  
+<div class='left' style='float:left;width:100%'>
+
+</div>    
+
+
+    <div class = 'foot1'>
+      <div class="bottomleft">
+      <a href="class10.html?full#toc"><img src = 'assets/img/arrow_left_circle.png' style="width:30px;height:30px;"></img></a>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="progress">
+    <div></div>
+  </div>
+  
+    <footer class = 'deck-foot'>
+      <a href="slide_index.html"><img src = 'assets/img/arrow_up_circle.png' style="width:30px;height:30px;" /></a>
+      <a href="#toc"><img src = 'assets/img/circle-info.png' style="width:32px;height:32px;" /></a>
+    </footer>    
+  
+	<script src="libraries/frameworks/shower/shower.js"></script>
+	<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({
+	    tex2jax: {
+	      inlineMath: [['$','$'], ['\\(','\\)']],
+	      processEscapes: true
+	    }
+	  });
+	</script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script> -->
+	
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+	<!-- LOAD HIGHLIGHTER JS FILES -->
+	<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+	 
+		<!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+	<!-- Photos by John Carey — fiftyfootshadows.net -->
+</body>
+</html>

@@ -134,6 +134,14 @@ if (0) {
     opts_knit$set(unnamed.chunk.label='class09-chunk')
     slidify("class09.Rmd")
   }
+  if (1) { ## class12
+    opts_knit$set(unnamed.chunk.label='class12-chunk')
+    slidify("class12.Rmd")
+  }
+  if (1) { ## class13
+    opts_knit$set(unnamed.chunk.label='class13-chunk')
+    slidify("class13.Rmd")
+  }
   
 }
 
